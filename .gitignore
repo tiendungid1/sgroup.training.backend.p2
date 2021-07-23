@@ -1,9 +1,6 @@
 # My file
 note.txt
 
-# Style file
-public/assets/
-
 # Logs
 logs
 *.log
