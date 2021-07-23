@@ -1,5 +1,7 @@
 import { logger } from 'common/utils';
+import { httpExceptionHandler } from 'libs/http-exception/handler/exception.handler';
 import { UsersService } from './users.service';
+import { OK } from 'http-status';
 
 export class UsersController {
     /**
@@ -22,5 +24,14 @@ export class UsersController {
 
     constructor(userService) {
         this.#userService = userService;
+    }
+
+    getAll = async (req, res) => {
+        try {
+            const data = await this.#userService.getAll();
+            return res.status(OK).json(data);
+        } catch (error) {
+            return httpExceptionHandler(error)(res);
+        }
     }
 }

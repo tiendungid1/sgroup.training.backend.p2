@@ -39,4 +39,10 @@ export class UserRepository {
     createOne(data) {
         return this.builder().insert(data);
     }
+
+    getAll(columns = '*') {
+        return this.builder().select(columns)
+            .leftJoin('users_roles', 'users.id', 'users_roles.user_id')
+            .leftJoin('roles', 'users_roles.role_id', 'roles.id');
+    }
 }

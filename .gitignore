@@ -2,16 +2,6 @@
 note.txt
 
 # Style file
-public/dist/css/
-public/dist/img/
-public/dist/js/pages/
-public/dist/js/.eslintrc.json
-public/dist/js/adminlte.js
-public/dist/js/adminlte.js.map
-public/dist/js/adminlte.min.js
-public/dist/js/adminlte.min.js.map
-public/dist/js/demo.js
-public/plugins/
 public/assets/
 
 # Logs

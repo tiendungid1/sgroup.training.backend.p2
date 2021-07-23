@@ -1,0 +1,47 @@
+extends ../../layout/private/user.layout.pug
+
+block content
+	.content-wrapper
+		// Content Header (Page header)
+		section.content-header
+			.container-fluid
+				.row.mb-2
+					.col-sm-6
+						h1 User Management
+					.col-sm-6
+						ol.breadcrumb.float-sm-right
+							li.breadcrumb-item
+								a(href='#') Home
+							li.breadcrumb-item.active User
+			// /.container-fluid
+		// Main content
+		section.content
+			.container-fluid
+				.row
+					.col-12
+						.card
+							.card-header
+								h3.card-title User in system
+							// /.card-header
+							.card-body
+								table.table.table-bordered.table-hover
+									thead
+										tr
+											th ID
+											th Username
+											th Fullname
+											th Status
+											th Roles
+									tbody#user-table
+									tfoot
+										tr
+											th ID
+											th Username
+											th Fullname
+											th Status
+											th Roles
+							// /.card-body
+					// /.col
+				// /.row
+			// /.container-fluid
+		// /.content
