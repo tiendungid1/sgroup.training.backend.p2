@@ -12,7 +12,7 @@ block content
 						ol.breadcrumb.float-sm-right
 							li.breadcrumb-item
 								a(href='#') Home
-							li.breadcrumb-item.active User
+							li.breadcrumb-item.active User			
 			// /.container-fluid
 		// Main content
 		section.content
@@ -22,26 +22,34 @@ block content
 						.card
 							.card-header
 								h3.card-title User in system
+							.select-action-form
+								.form-check
+									input#checkboxAll.form-check-input(type='checkbox' value='')
+									label.form-check-label(for='checkboxAll') Select all
+								select#selectAction.form-control.form-control-sm.checkbox-select-all-options(name='action' required='')
+									option(value='') -- Select action --
+									option(value='delete') Delete
+								button.btn.btn-primary.btn-sm.check-all-submit-btn(disabled='') Submit
 							// /.card-header
 							.card-body
 								table.table.table-bordered.table-hover
 									thead
 										tr
+											th #
 											th ID
 											th Username
 											th Fullname
+											th Avatar
 											th Status
 											th Roles
+											th Action
 									tbody#user-table
-									tfoot
-										tr
-											th ID
-											th Username
-											th Fullname
-											th Status
-											th Roles
 							// /.card-body
 					// /.col
 				// /.row
 			// /.container-fluid
 		// /.content
+
+block scripts
+	// Get all user when load page
+	script(src='/dist/js/user/user.js')
