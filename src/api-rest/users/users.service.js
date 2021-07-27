@@ -1,5 +1,5 @@
 import { logger } from 'common/utils';
-import { DuplicateException, UnAuthorizedException } from 'libs/http-exception/exceptions';
+import { DuplicateException, UnAuthorizedException, NotFoundException } from 'libs/http-exception/exceptions';
 import { UserRepository } from './user.repository';
 
 export class UsersService {
@@ -73,6 +73,30 @@ export class UsersService {
             return Object.values(users);
         } catch (error) {
             throw new UnAuthorizedException(`Your account ${email} does not exist`);
+        }
+    }
+
+    async getOneForEdit(id) {
+        try {
+            const row = await this.#userRepository.getOneForEdit('id', id);
+            
+            if (!row.length) {
+                return null;
+            }
+
+            const user = row[0];
+
+            return user;
+        } catch (error) {
+            throw new NotFoundException(`Can not find the account`);
+        }
+    }
+
+    async updateOneUser(body) {
+        try {
+            await this.#userRepository.updateOne(body);
+        } catch (error) {
+            throw new Error(error);
         }
     }
 }

@@ -30,10 +30,24 @@ export class UserRepository {
 
     findOne(fieldName, value) {
         return this.builder().select('users_roles.user_id', 'users.username', 'users.email', 'users.password', 'roles.id AS role_id', 'roles.name AS role_name')
-            .from('users')
             .leftJoin('users_roles', 'users.id', 'users_roles.user_id')
             .leftJoin('roles', 'users_roles.role_id', 'roles.id')
+            .where(fieldName, '=', value)
+            .andWhere('deleted', '=', 'false');
+    }
+
+    getOneForEdit(fieldName, value) {
+        return this.builder().select('users.username', 'users.fullname', 'users.email')
             .where(fieldName, '=', value);
+    }
+
+    updateOne(body) {
+        return this.builder().where('id', '=', body.id)
+            .update({
+                username: body.username,
+                fullname: body.fullname,
+                email: body.email
+            });
     }
     
     createOne(data) {
@@ -43,6 +57,7 @@ export class UserRepository {
     getAll(columns = '*') {
         return this.builder().select(columns)
             .leftJoin('users_roles', 'users.id', 'users_roles.user_id')
-            .leftJoin('roles', 'users_roles.role_id', 'roles.id');
+            .leftJoin('roles', 'users_roles.role_id', 'roles.id')
+            .where('deleted', '=', 'false');
     }
 }

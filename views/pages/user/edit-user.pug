@@ -1,0 +1,45 @@
+extends ../../layout/private/user.layout.pug
+
+block content
+	.content-wrapper
+		// Content Header (Page header)
+		section.content-header
+			.container-fluid
+				.row.mb-2
+					.col-sm-6
+						h1 Edit User Form
+					.col-sm-6
+						ol.breadcrumb.float-sm-right
+							li.breadcrumb-item
+								a(href='/') Home
+							li.breadcrumb-item.active Edit user
+			// /.container-fluid
+		// Main content
+		section.content
+			.container-fluid
+				.row
+					.col-md-12
+						.card.card-primary
+							.card-header
+								h3.card-title Enter your new info
+							// form start
+							form#editUser(method='POST' enctype='application/x-www-form-urlencoded')
+								.card-body
+									.form-group
+										label(for='username') Username
+										input#username.form-control(type='text' name='username' value= user.username)
+									.form-group
+										label(for='fullname') Fullname
+										input#fullname.form-control(type='text' name='fullname' value= user.fullname)
+									.form-group
+										label(for='email') Email
+										input#email.form-control(type='email' name='email' value= user.email)
+									.hidden-input
+										input(type='hidden' name='_method' value='PATCH')
+								.card-footer
+									button.btn.btn-primary(type='submit') Submit
+			// /.container-fluid
+		// /.content
+		
+block scripts
+	script(src='/dist/js/user/edit-user.js')

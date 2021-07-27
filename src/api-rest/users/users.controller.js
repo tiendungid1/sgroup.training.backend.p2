@@ -34,4 +34,13 @@ export class UsersController {
             return httpExceptionHandler(error)(res);
         }
     }
+
+    updateOneUser = async (req, res) => {
+        try {
+            await this.#userService.updateOneUser(req.body);
+            return res.status(OK).json({ message: 'OK' });
+        } catch (error) {
+            return httpExceptionHandler(error)(res);
+        }
+    }
 }
