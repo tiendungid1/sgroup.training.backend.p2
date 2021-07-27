@@ -36,7 +36,7 @@ block content
 									thead
 										tr
 											th #
-											th ID
+											th Id
 											th Username
 											th Fullname
 											th Avatar
@@ -49,6 +49,18 @@ block content
 				// /.row
 			// /.container-fluid
 		// /.content
+		#delete-user-modal.modal(tabindex='-1' role='dialog')
+			.modal-dialog(role='document')
+				.modal-content
+					.modal-header
+						h5.modal-title Confirm Delete Action
+						button.close(type='button' data-dismiss='modal' aria-label='Close')
+							span(aria-hidden='true') &times;
+					.modal-body
+						p Are you sure you want to delete this user?
+					.modal-footer
+						button#btn-delete-user.btn.btn-danger(type='button') Yeah, do it.
+						button.btn.btn-secondary(type='button' data-dismiss='modal') No, thanks.
 
 block scripts
 	script(src='/dist/js/user/user.js')

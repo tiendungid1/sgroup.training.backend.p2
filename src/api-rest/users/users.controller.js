@@ -35,9 +35,18 @@ export class UsersController {
         }
     }
 
-    updateOneUser = async (req, res) => {
+    updateOneById = async (req, res) => {
         try {
             await this.#userService.updateOneUser(req.body);
+            return res.status(OK).json({ message: 'OK' });
+        } catch (error) {
+            return httpExceptionHandler(error)(res);
+        }
+    }
+
+    sofeDeleteOneById = async (req, res) => {
+        try {
+            await this.#userService.sofeDeleteOneUser(req.params.id);
             return res.status(OK).json({ message: 'OK' });
         } catch (error) {
             return httpExceptionHandler(error)(res);

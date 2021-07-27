@@ -60,4 +60,12 @@ export class UserRepository {
             .leftJoin('roles', 'users_roles.role_id', 'roles.id')
             .where('deleted', '=', 'false');
     }
+
+    softDeleteOne(fieldName, value) {
+        return this.builder().where(fieldName, '=', value)
+            .update({
+                deleted: true,
+                deleted_at: new Date()
+            });
+    }
 }

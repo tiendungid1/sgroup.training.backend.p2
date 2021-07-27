@@ -88,7 +88,7 @@ export class UsersService {
 
             return user;
         } catch (error) {
-            throw new NotFoundException(`Can not find the account`);
+            throw new NotFoundException(`Can not get account's info`);
         }
     }
 
@@ -96,7 +96,15 @@ export class UsersService {
         try {
             await this.#userRepository.updateOne(body);
         } catch (error) {
-            throw new Error(error);
+            throw new NotFoundException(`Can not update account`);
+        }
+    }
+
+    async sofeDeleteOneUser(id) {
+        try {
+            await this.#userRepository.softDeleteOne('id', id);
+        } catch (error) {
+            throw new NotFoundException(`Can not soft delete account`);
         }
     }
 }

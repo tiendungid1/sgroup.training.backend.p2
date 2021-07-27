@@ -12,7 +12,7 @@ export function up(knex) {
         table.integer('age');
         table.enum('status', Object.values(UserStatus)).defaultTo(UserStatus.AVAILABLE);
         table.boolean('deleted').defaultTo(false);
-        table.date('deleted_At').defaultTo(null);
+        table.date('deleted_at').defaultTo(null);
     });
 }
 
