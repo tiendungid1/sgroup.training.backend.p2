@@ -54,11 +54,11 @@ export class UserRepository {
         return this.builder().insert(data);
     }
 
-    getAll(columns = '*') {
+    getAll(fieldName, value, columns = '*') {
         return this.builder().select(columns)
             .leftJoin('users_roles', 'users.id', 'users_roles.user_id')
             .leftJoin('roles', 'users_roles.role_id', 'roles.id')
-            .where('deleted', '=', 'false');
+            .where(fieldName, '=', value);
     }
 
     softDeleteOne(fieldName, value) {
@@ -67,5 +67,37 @@ export class UserRepository {
                 deleted: true,
                 deleted_at: new Date()
             });
+    }
+
+    softDeleteMany(ids) {
+        return this.builder().whereIn('id', ids)
+            .update({
+                deleted: true,
+                deleted_at: new Date()
+            });
+    }
+
+    restoreOne(fieldName, value) {
+        return this.builder().where(fieldName, '=', value)
+            .update({
+                deleted: false,
+                deleted_at: null
+            });
+    }
+
+    forceDeleteOne(fieldName, value) {
+        return this.builder().where(fieldName, '=', value).del();
+    }
+
+    restoreMany(ids) {
+        return this.builder().whereIn('id', ids)
+            .update({
+                deleted: false,
+                deleted_at: null
+            });
+    }
+
+    forceDeleteMany(ids) {
+        return this.builder().whereIn('id', ids).del();
     }
 }

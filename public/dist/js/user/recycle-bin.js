@@ -30,7 +30,7 @@ const userHandler = {
                     <td>${user.status}</td>
                     <td>${user.roles}</td>
                     <td>
-                        <a href="/user/${user.user_id}/edit" class="btn btn-link">Edit</a>
+                        <input class="btn btn-link restoreBtn" value="Restore" placeholder="${user.user_id}" readonly>
                         <a href="" data-id="${user.user_id}" class="btn btn-link" data-toggle="modal" data-target="#delete-user-modal">Delete</a>
                     </td>
                 </tr>
@@ -39,8 +39,17 @@ const userHandler = {
 
         userTable.innerHTML = htmls.join('');
     },
-    softDeleteOneById: async function(id) {
-        const response = await fetch(`http://localhost:4000/api/v1/users/${id}`, { method: 'DELETE' });
+    forceDeleteOneById: async function(id) {
+        const response = await fetch(`http://localhost:4000/api/v1/users/${id}/force`, { method: 'DELETE' });
+
+        if (!response.ok) {
+            alert('Error');
+        } else {
+            return location.reload();
+        }
+    },
+    restoreOneById: async function(id) {
+        const response = await fetch(`http://localhost:4000/api/v1/users/${id}/restore`, { method: 'PATCH' });
 
         if (!response.ok) {
             alert('Error');
@@ -49,7 +58,7 @@ const userHandler = {
         }
     },
     getUsersWhenPageLoad: async function() {
-        const response = await fetch('http://localhost:4000/api/v1/users', { method: 'GET' });
+        const response = await fetch('http://localhost:4000/api/v1/users/get-deleted-users', { method: 'GET' });
         const users = await response.json();
         this.renderUserTable(users);
     },
@@ -61,7 +70,7 @@ const userHandler = {
             userIds.push(item.value);
         });
 
-        const response = await fetch('http://localhost:4000/api/v1/users/handle-user-page-actions', {
+        const response = await fetch('http://localhost:4000/api/v1/users/handle-trash-page-actions', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json, text/plain, */*',
@@ -103,9 +112,16 @@ const userHandler = {
             userId = button.data('id');
         });
 
-        document.querySelector('#btn-delete-user').onclick = async function() {
-            _this.softDeleteOneById(userId);
-        }
+        document.querySelector('#btn-delete-user').onclick = function() {
+            _this.forceDeleteOneById(userId);
+        };
+
+        // Restore one user with id
+        document.querySelectorAll('.restoreBtn').forEach(item => {
+            item.onclick = function() {
+                _this.restoreOneById(item.placeholder);
+            };
+        });
 
         // Handle select buttons and select input
         const checkboxAll = document.querySelector('#checkboxAll');
@@ -147,7 +163,7 @@ const userHandler = {
 
                 _this.renderCheckboxAllSubmitBtn();
             };
-        });
+        });        
 
         document.querySelector('.check-all-submit-btn').onclick = function() {
             _this.actionsHandler();

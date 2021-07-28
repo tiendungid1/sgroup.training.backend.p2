@@ -1,5 +1,5 @@
 import { logger } from 'common/utils';
-import { DuplicateException, UnAuthorizedException, NotFoundException } from 'libs/http-exception/exceptions';
+import { DuplicateException, UnAuthorizedException, NotFoundException, UnprocessEntityException } from 'libs/http-exception/exceptions';
 import { UserRepository } from './user.repository';
 
 export class UsersService {
@@ -51,7 +51,7 @@ export class UsersService {
 
     async getAll() {
         try {
-            const rows = await this.#userRepository.getAll();
+            const rows = await this.#userRepository.getAll('deleted', false);
             
             if (!rows.length) {
                 return null;
@@ -72,7 +72,7 @@ export class UsersService {
 
             return Object.values(users);
         } catch (error) {
-            throw new UnAuthorizedException(`Your account ${email} does not exist`);
+            throw new Error(error);
         }
     }
 
@@ -96,15 +96,81 @@ export class UsersService {
         try {
             await this.#userRepository.updateOne(body);
         } catch (error) {
-            throw new NotFoundException(`Can not update account`);
+            throw new UnprocessEntityException(`Can not update account`);
         }
     }
 
-    async sofeDeleteOneUser(id) {
+    async softDeleteOneUser(id) {
         try {
             await this.#userRepository.softDeleteOne('id', id);
         } catch (error) {
-            throw new NotFoundException(`Can not soft delete account`);
+            throw new UnprocessEntityException(`Can not soft delete account`);
+        }
+    }
+
+    async softDeleteManyUsers(body) {
+        switch (body.action) {
+            case 'delete':
+                await this.#userRepository.softDeleteMany(body.userIds);
+                break;
+            default:
+                throw new UnprocessEntityException(`Can not soft delete accounts`);
+        }
+    }
+
+    async getUsersInRecycleBin() {
+        try {
+            const rows = await this.#userRepository.getAll('deleted', true);
+            
+            if (!rows.length) {
+                return null;
+            }
+
+            const users = {};
+
+            rows.forEach(row => {
+                if (!users[row.user_id]) {
+                    users[row.user_id] = {
+                        ...row,
+                        roles: [row.name]
+                    };
+                } else {
+                    users[row.user_id].roles.push(row.name);
+                }
+            });
+
+            return Object.values(users);
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    async restoreOneUser(id) {
+        try {
+            await this.#userRepository.restoreOne('id', id);
+        } catch (error) {
+            throw new UnprocessEntityException(`Can not restore account`);
+        }
+    }
+
+    async forceDeleteOneUser(id) {
+        try {
+            await this.#userRepository.forceDeleteOne('id', id);
+        } catch (error) {
+            throw new UnprocessEntityException(`Can not soft delete account`);
+        }
+    }
+
+    async handleTrashPageActions(body) {
+        switch (body.action) {
+            case 'restore':
+                await this.#userRepository.restoreMany(body.userIds);
+                break;
+            case 'delete':
+                await this.#userRepository.forceDeleteMany(body.userIds);
+                break;
+            default:
+                throw new UnprocessEntityException(`Can not handle actions`);
         }
     }
 }

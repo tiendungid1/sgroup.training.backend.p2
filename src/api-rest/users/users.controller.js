@@ -44,9 +44,54 @@ export class UsersController {
         }
     }
 
-    sofeDeleteOneById = async (req, res) => {
+    softDeleteOneById = async (req, res) => {
         try {
-            await this.#userService.sofeDeleteOneUser(req.params.id);
+            await this.#userService.softDeleteOneUser(req.params.id);
+            return res.status(OK).json({ message: 'OK' });
+        } catch (error) {
+            return httpExceptionHandler(error)(res);
+        }
+    }
+
+    handleUserPageActions = async (req, res) => {
+        try {
+            await this.#userService.softDeleteManyUsers(req.body);
+            return res.status(OK).json({ message: 'OK' });
+        } catch (error) {
+            return httpExceptionHandler(error)(res);
+        }
+    }
+
+    getAllDeletedUsers = async (req, res) => {
+        try {
+            const data = await this.#userService.getUsersInRecycleBin();
+            return res.status(OK).json(data);
+        } catch (error) {
+            return httpExceptionHandler(error)(res);
+        }
+    }
+
+    restoreOneById = async (req, res) => {
+        try {
+            await this.#userService.restoreOneUser(req.params.id);
+            return res.status(OK).json({ message: 'OK' });
+        } catch (error) {
+            return httpExceptionHandler(error)(res);
+        }
+    }
+
+    forceDeleteOneById = async (req, res) => {
+        try {
+            await this.#userService.forceDeleteOneUser(req.params.id);
+            return res.status(OK).json({ message: 'OK' });
+        } catch (error) {
+            return httpExceptionHandler(error)(res);
+        }
+    }
+    
+    handleTrashPageActions = async (req, res) => {
+        try {
+            await this.#userService.handleTrashPageActions(req.body);
             return res.status(OK).json({ message: 'OK' });
         } catch (error) {
             return httpExceptionHandler(error)(res);

@@ -14,3 +14,19 @@
 .checkbox-select-all-options {
     margin: 0 20px;
 }
+
+.restoreBtn {
+    cursor: pointer;
+    font-weight: 400;
+    color: #007bff;
+}
+
+@media (max-width: 1000px) {
+    .select-action-form {
+        width: 55%;
+    }
+
+    .select-action-form .form-check {
+        width: 40%;
+    }
+}

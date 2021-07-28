@@ -11,6 +11,7 @@ router.get('/:id/edit', async (req, res) => {
         console.log(error);        
     }
 });
+router.get('/trash', (req, res) => res.render('pages/user/recycle-bin.pug'));
 router.get('/', (req, res) => res.render('pages/user/user.pug'));
 
 export const userPageRouter = router;
