@@ -57,20 +57,23 @@ export class UsersService {
                 return null;
             }
 
-            const users = {};
+            const obj = {};
 
             rows.forEach(row => {
-                if (!users[row.user_id]) {
-                    users[row.user_id] = {
+                if (!obj[row.user_id]) {
+                    obj[row.user_id] = {
                         ...row,
                         roles: [row.name]
                     };
                 } else {
-                    users[row.user_id].roles.push(row.name);
+                    obj[row.user_id].roles.push(row.name);
                 }
             });
 
-            return Object.values(users);
+            const users = Object.assign([], obj).reverse();
+            users.pop();
+            
+            return users;
         } catch (error) {
             throw new Error(error);
         }

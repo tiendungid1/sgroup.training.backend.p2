@@ -36,8 +36,14 @@ block content
 									thead
 										tr
 											th #
-											th Id
-											th Username
+											td
+												| ID
+												a(href='?_sort&column=id&type=desc')
+													span.oi.oi-elevator
+											th
+												| Username
+												a(href='?_sort&column=id&type=desc')
+													span.oi.oi-elevator
 											th Fullname
 											th Avatar
 											th Status
