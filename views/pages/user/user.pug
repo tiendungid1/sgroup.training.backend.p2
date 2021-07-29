@@ -36,14 +36,16 @@ block content
 									thead
 										tr
 											th #
-											td
+											th.column-id
 												| ID
-												a(href='?_sort&column=id&type=desc')
-													span.oi.oi-elevator
-											th
+												span#sortById.oi.oi-elevator
+												span#sortByIdDesc.oi.oi-sort-descending
+												span#sortByIdAsc.oi.oi-sort-ascending
+											th.column-username
 												| Username
-												a(href='?_sort&column=id&type=desc')
-													span.oi.oi-elevator
+												span#sortByUsername.oi.oi-elevator
+												span#sortByUsernameDesc.oi.oi-sort-descending
+												span#sortByUsernameAsc.oi.oi-sort-ascending
 											th Fullname
 											th Avatar
 											th Status

@@ -21,6 +21,12 @@
     color: #007bff;
 }
 
+.oi-elevator, .oi-sort-descending, .oi-sort-ascending {
+    cursor: pointer;
+    color: #007bff;
+    margin-left: 8px;
+}
+
 @media (max-width: 1000px) {
     .select-action-form {
         width: 55%;

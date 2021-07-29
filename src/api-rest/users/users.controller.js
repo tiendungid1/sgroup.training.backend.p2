@@ -28,7 +28,7 @@ export class UsersController {
 
     getAll = async (req, res) => {
         try {
-            const data = await this.#userService.getAll();
+            const data = await this.#userService.getAll(res);
             return res.status(OK).json(data);
         } catch (error) {
             return httpExceptionHandler(error)(res);
@@ -97,4 +97,13 @@ export class UsersController {
             return httpExceptionHandler(error)(res);
         }
     }
+
+    // getSortData = async (req, res) => {
+    //     try {
+    //         const data = await this.#userService.getSortData(req.params);
+    //         return res.status(OK).json(data);
+    //     } catch (error) {
+    //         return httpExceptionHandler(error)(res);
+    //     }
+    // }
 }

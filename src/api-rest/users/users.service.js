@@ -49,10 +49,50 @@ export class UsersService {
         }
     }
 
-    async getAll() {
+    // async getDataWithConditions(getWhat, sortCondition) {
+    //     try {
+    //         const rows = [];
+    //         if (getWhat === 'all') {
+    //             rows = await this.#userRepository.getAll('deleted', false);
+    //         } else if (getWhat === 'sort') {
+    //             rows = await this.#userRepository.getAll('deleted', false);
+    //         }
+            
+    //         if (!rows.length) {
+    //             return null;
+    //         }
+
+    //         const obj = {};
+
+    //         rows.forEach(row => {
+    //             if (!obj[row.user_id]) {
+    //                 obj[row.user_id] = {
+    //                     ...row,
+    //                     roles: [row.name]
+    //                 };
+    //             } else {
+    //                 obj[row.user_id].roles.push(row.name);
+    //             }
+    //         });
+
+    //         const users = Object.assign([], obj).reverse();
+    //         users.pop();
+            
+    //         return users;
+    //     } catch (error) {
+    //         throw new Error(error);
+    //     }
+    // }
+
+    async getAll(res) {
         try {
             const rows = await this.#userRepository.getAll('deleted', false);
-            
+            console.log(res.locals._sort);
+            // if (req.query.hasOwnProperty('_sort')) {
+            //     console.log(req.query.column);
+            //     console.log(req.query.type);
+            // }
+
             if (!rows.length) {
                 return null;
             }
@@ -176,4 +216,16 @@ export class UsersService {
                 throw new UnprocessEntityException(`Can not handle actions`);
         }
     }
+
+    // async getSortDataOnUserPage(params) {
+    //     if (params.column === 'users.id' && params.type === 'asc') {
+
+    //     } else if (params.column === 'users.id' && params.type === 'desc') {
+
+    //     } else if (params.column === 'users.username' && params.type === 'asc') {
+
+    //     } else if (params.column === 'users.id' && params.type === 'desc') {
+            
+    //     }
+    // }
 }

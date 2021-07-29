@@ -59,7 +59,7 @@ export class UserRepository {
             .leftJoin('users_roles', 'users.id', 'users_roles.user_id')
             .leftJoin('roles', 'users_roles.role_id', 'roles.id')
             .where(fieldName, '=', value)
-            .orderBy('users_roles.user_id', 'desc');
+            .orderBy('users.id', 'desc');
     }
 
     softDeleteOne(fieldName, value) {
@@ -101,4 +101,12 @@ export class UserRepository {
     forceDeleteMany(ids) {
         return this.builder().whereIn('id', ids).del();
     }
+
+    // getSortData(column, type, fieldName, value) {
+    //     return this.builder().select('*')
+    //         .leftJoin('users_roles', 'users.id', 'users_roles.user_id')
+    //         .leftJoin('roles', 'users_roles.role_id', 'roles.id')
+    //         .where(fieldName, '=', value)
+    //         .orderBy(column, type);
+    // }
 }

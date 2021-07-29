@@ -1,18 +1,19 @@
 const userTable = document.querySelector('#user-table');
+const sortById = document.querySelector('#sortById');
+const sortByUsername = document.querySelector('#sortByUsername');
+const sortByIdDesc = document.querySelector('#sortByIdDesc');
+const sortByIdAsc = document.querySelector('#sortByIdAsc');
+const sortByUsernameDesc = document.querySelector('#sortByUsernameDesc');
+const sortByUsernameAsc = document.querySelector('#sortByUsernameAsc');
 
 const userHandler = {
+    renderWhenPageLoad: function() {
+        sortByIdDesc.style.display = 'none';
+        sortByIdAsc.style.display = 'none';
+        sortByUsernameDesc.style.display = 'none';
+        sortByUsernameAsc.style.display = 'none';
+    },
     renderUserTable: function(users) {
-        if (users.length === 0) {
-            userTable.innerHTML = `
-                <tr>
-                    <td colspan="8" class="text-center">
-                        There are no users in database.
-                    </td>
-                </tr>
-            `
-            return;
-        };
-
         const htmls = users.map(user => {
             return `
                 <tr>
@@ -49,7 +50,7 @@ const userHandler = {
         }
     },
     getUsersWhenPageLoad: async function() {
-        const response = await fetch('http://localhost:4000/api/v1/users', { method: 'GET' });
+        const response = await fetch(`http://localhost:4000/api/v1/users`, { method: 'GET' });
         const users = await response.json();
         this.renderUserTable(users);
     },
@@ -79,6 +80,9 @@ const userHandler = {
         } else {
             return location.reload();
         }
+    },
+    sort: function() {
+        
     },
     renderCheckboxAllSubmitBtn: function() {
         const checkAllSubmitBtn = $('.check-all-submit-btn');
@@ -152,10 +156,44 @@ const userHandler = {
         document.querySelector('.check-all-submit-btn').onclick = function() {
             _this.actionsHandler();
         };
+
+        // Sort by id
+        sortById.onclick = function() {
+            sortById.style.display = 'none';
+            sortByIdDesc.style.display = 'inline-block';
+        };
+
+        sortByIdDesc.onclick = function() {
+            sortByIdDesc.style.display = 'none';
+            sortByIdAsc.style.display = 'inline-block';
+        }
+
+        sortByIdAsc.onclick = function() {
+            sortByIdAsc.style.display = 'none';
+            sortByIdDesc.style.display = 'inline-block';
+        }
+        
+        // Sort by username
+        sortByUsername.onclick = function() {
+            sortByUsername.style.display = 'none';
+            sortByUsernameDesc.style.display = 'inline-block';
+            sortByUsernameAsc.style.display = 'none';
+        };
+
+        sortByUsernameDesc.onclick = function() {
+            sortByUsernameDesc.style.display = 'none';
+            sortByUsernameAsc.style.display = 'inline-block';
+        }
+
+        sortByUsernameAsc.onclick = function() {
+            sortByUsernameAsc.style.display = 'none';
+            sortByUsernameDesc.style.display = 'inline-block';
+        }
     },
     start: function() {
         const _this = this;
-
+        
+        _this.renderWhenPageLoad();
         _this.getUsersWhenPageLoad();
 
         setTimeout(function() {
