@@ -2,16 +2,9 @@ const userTable = document.querySelector('#user-table');
 
 const userHandler = {
     renderUserTable: function(users) {
-        if (users.length === 0) {
-            userTable.innerHTML = `
-                <tr>
-                    <td colspan="8" class="text-center">
-                        There are no users in database.
-                    </td>
-                </tr>
-            `
+        if (!users) {
             return;
-        };
+        }
 
         const htmls = users.map(user => {
             return `
@@ -28,7 +21,7 @@ const userHandler = {
                         <img src="${user.avatar}" height="100px" width="100px">
                     </td>
                     <td>${user.status}</td>
-                    <td>${user.roles}</td>
+                    <td>${user.name}</td>
                     <td>
                         <input class="btn btn-link restoreBtn" value="Restore" placeholder="${user.user_id}" readonly>
                         <a href="" data-id="${user.user_id}" class="btn btn-link" data-toggle="modal" data-target="#delete-user-modal">Delete</a>

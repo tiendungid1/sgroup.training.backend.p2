@@ -3,9 +3,15 @@ const sortByIdDesc = document.querySelector('#sortByIdDesc');
 const sortByIdAsc = document.querySelector('#sortByIdAsc');
 const sortByUsernameDesc = document.querySelector('#sortByUsernameDesc');
 const sortByUsernameAsc = document.querySelector('#sortByUsernameAsc');
+const searchQuery = document.querySelector('#searchQuery');
+const searchBtn = document.querySelector('#searchBtn');
 
 const userHandler = {
     renderUserTable: function(users) {
+        if (!users) {
+            return;
+        }
+
         const htmls = users.map(user => {
             return `
                 <tr>
@@ -75,6 +81,11 @@ const userHandler = {
     },
     sort: async function(column, type) {
         const response = await fetch(`http://localhost:4000/api/v1/users?_sort&column=${column}&type=${type}`, { method: 'GET' });
+        const users = await response.json();
+        this.renderUserTable(users);
+    },
+    search: async function(query) {
+        const response = await fetch(`http://localhost:4000/api/v1/users?_search=${query}`, { method: 'GET' });
         const users = await response.json();
         this.renderUserTable(users);
     },
@@ -167,6 +178,19 @@ const userHandler = {
 
         sortByUsernameAsc.onclick = function() {
             _this.sort('users.username', 'asc');
+        }
+
+        // Search
+        window.onkeyup = function(e) {
+            if (e.key === 'Enter' && searchQuery.value !== '') {
+                _this.search(searchQuery.value);
+            }
+        }
+
+        searchBtn.onclick = function() {
+            if (searchQuery.value !== '') {
+                _this.search(searchQuery.value);
+            }
         }
     },
     start: function() {

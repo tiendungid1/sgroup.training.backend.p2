@@ -49,41 +49,6 @@ export class UsersService {
         }
     }
 
-    // async getDataWithConditions(getWhat, sortCondition) {
-    //     try {
-    //         const rows = [];
-    //         if (getWhat === 'all') {
-    //             rows = await this.#userRepository.getAll('deleted', false);
-    //         } else if (getWhat === 'sort') {
-    //             rows = await this.#userRepository.getAll('deleted', false);
-    //         }
-            
-    //         if (!rows.length) {
-    //             return null;
-    //         }
-
-    //         const obj = {};
-
-    //         rows.forEach(row => {
-    //             if (!obj[row.user_id]) {
-    //                 obj[row.user_id] = {
-    //                     ...row,
-    //                     roles: [row.name]
-    //                 };
-    //             } else {
-    //                 obj[row.user_id].roles.push(row.name);
-    //             }
-    //         });
-
-    //         const users = Object.assign([], obj).reverse();
-    //         users.pop();
-            
-    //         return users;
-    //     } catch (error) {
-    //         throw new Error(error);
-    //     }
-    // }
-
     async getAll(res) {
         try {
             if (res._sort.type === 'default') {
@@ -91,7 +56,13 @@ export class UsersService {
                 res._sort.type = 'asc';
             }
 
-            const rows = await this.#userRepository.getAll('deleted', false, res._sort.column, res._sort.type);
+            let rows;
+
+            if (res._search !== '') {
+                rows = await this.#userRepository.getAll(res._sort.column, res._sort.type, 'deleted', false, 'users.username', `%${res._search}%`);
+            } else {
+                rows = await this.#userRepository.getAll(res._sort.column, res._sort.type, 'deleted', false);
+            }
 
             if (!rows.length) {
                 return null;
@@ -145,28 +116,26 @@ export class UsersService {
         }
     }
 
-    async getUsersInRecycleBin() {
+    async getUsersInRecycleBin(res) {
         try {
-            const rows = await this.#userRepository.getAll('deleted', true);
-            
+            if (res._sort.type === 'default') {
+                res._sort.column = 'users.id';
+                res._sort.type = 'asc';
+            }
+
+            let rows;
+
+            if (res._search !== '') {
+                rows = await this.#userRepository.getAll(res._sort.column, res._sort.type, 'deleted', true, 'users.username', `%${res._search}%`);
+            } else {
+                rows = await this.#userRepository.getAll(res._sort.column, res._sort.type, 'deleted', true);
+            }
+
             if (!rows.length) {
                 return null;
             }
 
-            const users = {};
-
-            rows.forEach(row => {
-                if (!users[row.user_id]) {
-                    users[row.user_id] = {
-                        ...row,
-                        roles: [row.name]
-                    };
-                } else {
-                    users[row.user_id].roles.push(row.name);
-                }
-            });
-
-            return Object.values(users);
+            return rows;
         } catch (error) {
             throw new Error(error);
         }
@@ -200,16 +169,4 @@ export class UsersService {
                 throw new UnprocessEntityException(`Can not handle actions`);
         }
     }
-
-    // async getSortDataOnUserPage(params) {
-    //     if (params.column === 'users.id' && params.type === 'asc') {
-
-    //     } else if (params.column === 'users.id' && params.type === 'desc') {
-
-    //     } else if (params.column === 'users.username' && params.type === 'asc') {
-
-    //     } else if (params.column === 'users.id' && params.type === 'desc') {
-            
-    //     }
-    // }
 }

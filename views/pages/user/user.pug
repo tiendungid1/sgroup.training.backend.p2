@@ -22,14 +22,20 @@ block content
 						.card
 							.card-header
 								h3.card-title User in system
-							.select-action-form
-								.form-check
-									input#checkboxAll.form-check-input(type='checkbox' value='')
-									label.form-check-label(for='checkboxAll') Select all
-								select#selectAction.form-control.form-control-sm.checkbox-select-all-options(name='action')
-									option(value='') -- Select action --
-									option(value='delete') Delete
-								button.btn.btn-primary.btn-sm.check-all-submit-btn(disabled='true') Submit
+							.card-action
+								.select-action-form
+									.form-check
+										input#checkboxAll.form-check-input(type='checkbox' value='')
+										label.form-check-label(for='checkboxAll') Select all
+									select#selectAction.form-control.form-control-sm.checkbox-select-all-options(name='action')
+										option(value='') -- Select action --
+										option(value='delete') Delete
+									button.btn.btn-primary.btn-sm.check-all-submit-btn(disabled='true') Submit
+								.input-group
+									input#searchQuery.form-control.form-control-sm(type='search' placeholder='Search username')
+									.input-group-append
+										button#searchBtn.btn.btn-sm.btn-default(type='button')
+											i.fa.fa-search
 							// /.card-header
 							.card-body
 								table.table.table-bordered.table-hover

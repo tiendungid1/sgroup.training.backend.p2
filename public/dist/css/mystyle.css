@@ -1,8 +1,13 @@
-.select-action-form {
+.card-action {
     display: flex;
     align-items: center;
     padding: 20px 20px 0 20px;
-    width: 30%;
+}
+
+.select-action-form {
+    display: flex;
+    align-items: center;
+    width: 45%;
 }
 
 .select-action-form .form-check {
@@ -26,6 +31,9 @@
     color: #007bff;
     font-size: 12px;
     margin-left: 8px;
+}
+.card-action .input-group {
+    margin-left: 40px;
 }
 
 @media (max-width: 1000px) {
