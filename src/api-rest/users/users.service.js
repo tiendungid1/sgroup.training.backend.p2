@@ -86,34 +86,18 @@ export class UsersService {
 
     async getAll(res) {
         try {
-            const rows = await this.#userRepository.getAll('deleted', false);
-            console.log(res.locals._sort);
-            // if (req.query.hasOwnProperty('_sort')) {
-            //     console.log(req.query.column);
-            //     console.log(req.query.type);
-            // }
+            if (res._sort.type === 'default') {
+                res._sort.column = 'users.id';
+                res._sort.type = 'asc';
+            }
+
+            const rows = await this.#userRepository.getAll('deleted', false, res._sort.column, res._sort.type);
 
             if (!rows.length) {
                 return null;
             }
 
-            const obj = {};
-
-            rows.forEach(row => {
-                if (!obj[row.user_id]) {
-                    obj[row.user_id] = {
-                        ...row,
-                        roles: [row.name]
-                    };
-                } else {
-                    obj[row.user_id].roles.push(row.name);
-                }
-            });
-
-            const users = Object.assign([], obj).reverse();
-            users.pop();
-            
-            return users;
+            return rows;
         } catch (error) {
             throw new Error(error);
         }

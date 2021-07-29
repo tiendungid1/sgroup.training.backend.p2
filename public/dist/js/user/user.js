@@ -1,18 +1,10 @@
 const userTable = document.querySelector('#user-table');
-const sortById = document.querySelector('#sortById');
-const sortByUsername = document.querySelector('#sortByUsername');
 const sortByIdDesc = document.querySelector('#sortByIdDesc');
 const sortByIdAsc = document.querySelector('#sortByIdAsc');
 const sortByUsernameDesc = document.querySelector('#sortByUsernameDesc');
 const sortByUsernameAsc = document.querySelector('#sortByUsernameAsc');
 
 const userHandler = {
-    renderWhenPageLoad: function() {
-        sortByIdDesc.style.display = 'none';
-        sortByIdAsc.style.display = 'none';
-        sortByUsernameDesc.style.display = 'none';
-        sortByUsernameAsc.style.display = 'none';
-    },
     renderUserTable: function(users) {
         const htmls = users.map(user => {
             return `
@@ -29,7 +21,7 @@ const userHandler = {
                         <img src="${user.avatar}" height="100px" width="100px">
                     </td>
                     <td>${user.status}</td>
-                    <td>${user.roles}</td>
+                    <td>${user.name}</td>
                     <td>
                         <a href="/user/${user.user_id}/edit" class="btn btn-link">Edit</a>
                         <a href="" data-id="${user.user_id}" class="btn btn-link" data-toggle="modal" data-target="#delete-user-modal">Delete</a>
@@ -81,8 +73,10 @@ const userHandler = {
             return location.reload();
         }
     },
-    sort: function() {
-        
+    sort: async function(column, type) {
+        const response = await fetch(`http://localhost:4000/api/v1/users?_sort&column=${column}&type=${type}`, { method: 'GET' });
+        const users = await response.json();
+        this.renderUserTable(users);
     },
     renderCheckboxAllSubmitBtn: function() {
         const checkAllSubmitBtn = $('.check-all-submit-btn');
@@ -158,42 +152,26 @@ const userHandler = {
         };
 
         // Sort by id
-        sortById.onclick = function() {
-            sortById.style.display = 'none';
-            sortByIdDesc.style.display = 'inline-block';
-        };
-
         sortByIdDesc.onclick = function() {
-            sortByIdDesc.style.display = 'none';
-            sortByIdAsc.style.display = 'inline-block';
+            _this.sort('users.id', 'desc');
         }
 
         sortByIdAsc.onclick = function() {
-            sortByIdAsc.style.display = 'none';
-            sortByIdDesc.style.display = 'inline-block';
+            _this.sort('users.id', 'asc');
         }
         
         // Sort by username
-        sortByUsername.onclick = function() {
-            sortByUsername.style.display = 'none';
-            sortByUsernameDesc.style.display = 'inline-block';
-            sortByUsernameAsc.style.display = 'none';
-        };
-
         sortByUsernameDesc.onclick = function() {
-            sortByUsernameDesc.style.display = 'none';
-            sortByUsernameAsc.style.display = 'inline-block';
+            _this.sort('users.username', 'desc');
         }
 
         sortByUsernameAsc.onclick = function() {
-            sortByUsernameAsc.style.display = 'none';
-            sortByUsernameDesc.style.display = 'inline-block';
+            _this.sort('users.username', 'asc');
         }
     },
     start: function() {
         const _this = this;
-        
-        _this.renderWhenPageLoad();
+
         _this.getUsersWhenPageLoad();
 
         setTimeout(function() {

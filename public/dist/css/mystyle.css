@@ -21,9 +21,10 @@
     color: #007bff;
 }
 
-.oi-elevator, .oi-sort-descending, .oi-sort-ascending {
+.oi-sort-descending, .oi-sort-ascending {
     cursor: pointer;
     color: #007bff;
+    font-size: 12px;
     margin-left: 8px;
 }
 

@@ -54,12 +54,12 @@ export class UserRepository {
         return this.builder().insert(data);
     }
 
-    getAll(fieldName, value, columns = '*') {
-        return this.builder().select(columns)
+    getAll(fieldName, value, column, type) {
+        return this.builder().select('*')
             .leftJoin('users_roles', 'users.id', 'users_roles.user_id')
             .leftJoin('roles', 'users_roles.role_id', 'roles.id')
             .where(fieldName, '=', value)
-            .orderBy('users.id', 'desc');
+            .orderBy(column, type);
     }
 
     softDeleteOne(fieldName, value) {
