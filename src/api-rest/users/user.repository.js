@@ -54,21 +54,40 @@ export class UserRepository {
         return this.builder().insert(data);
     }
 
-    getAll(column, type, boolColumn, boolValue, searchColumn, searchValue) {
+    async getAll(column, type, limit, offset, boolColumn, boolValue, searchColumn, searchValue) {
+        const countItems = await this.builder().count('users.id', {as: 'items'});
+        const obj = {};
+
         if (searchValue) {
-            return this.builder().select('*')
+            const rows = await this.builder().select('*')
                 .leftJoin('users_roles', 'users.id', 'users_roles.user_id')
                 .leftJoin('roles', 'users_roles.role_id', 'roles.id')
                 .where(boolColumn, '=', boolValue)
                 .andWhere(searchColumn, 'like', searchValue)
-                .orderBy(column, type);
+                .orderBy(column, type)
+                .limit(limit).offset(offset);
+
+            Object.assign(obj, {
+                countItems: countItems[0].items,
+                rows: rows
+            });
+
+            return obj;
         }
 
-        return this.builder().select('*')
+        const rows = await this.builder().select('*')
             .leftJoin('users_roles', 'users.id', 'users_roles.user_id')
             .leftJoin('roles', 'users_roles.role_id', 'roles.id')
             .where(boolColumn, '=', boolValue)
-            .orderBy(column, type);
+            .orderBy(column, type)
+            .limit(limit).offset(offset);
+
+        Object.assign(obj, {
+            countItems: countItems[0].items,
+            rows: rows
+        });
+
+        return obj;
     }
 
     softDeleteOne(fieldName, value) {

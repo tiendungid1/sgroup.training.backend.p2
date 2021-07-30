@@ -56,19 +56,19 @@ export class UsersService {
                 res._sort.type = 'asc';
             }
 
-            let rows;
+            let obj;
 
             if (res._search !== '') {
-                rows = await this.#userRepository.getAll(res._sort.column, res._sort.type, 'deleted', false, 'users.username', `%${res._search}%`);
+                obj = await this.#userRepository.getAll(res._sort.column, res._sort.type, res.limit, res.offset, 'deleted', false, 'users.username', `%${res._search}%`);
             } else {
-                rows = await this.#userRepository.getAll(res._sort.column, res._sort.type, 'deleted', false);
+                obj = await this.#userRepository.getAll(res._sort.column, res._sort.type, res.limit, res.offset, 'deleted', false);
             }
 
-            if (!rows.length) {
+            if (!obj.rows.length) {
                 return null;
             }
 
-            return rows;
+            return obj;
         } catch (error) {
             throw new Error(error);
         }
@@ -118,6 +118,11 @@ export class UsersService {
 
     async getUsersInRecycleBin(res) {
         try {
+            const builder = this.#userRepository.getAll()
+                .leftJoin('users_roles', 'users.id', 'users_roles.user_id')
+                .leftJoin('roles', 'users_roles.role_id', 'roles.id')
+                .where('deleted', '=', true);
+
             if (res._sort.type === 'default') {
                 res._sort.column = 'users.id';
                 res._sort.type = 'asc';
@@ -126,14 +131,26 @@ export class UsersService {
             let rows;
 
             if (res._search !== '') {
-                rows = await this.#userRepository.getAll(res._sort.column, res._sort.type, 'deleted', true, 'users.username', `%${res._search}%`);
+                builder
+                    .andWhere('users.username', 'like', `%${res._search}%`)
+                    .orderBy(res._sort.column, res._sort.type);
+                // rows = await this.#userRepository.getAll(res._sort.column, res._sort.type, 'deleted', true, 'users.username', `%${res._search}%`);
             } else {
-                rows = await this.#userRepository.getAll(res._sort.column, res._sort.type, 'deleted', true);
+                builder.orderBy(res._sort.column, res._sort.type);
+                // rows = await this.#userRepository.getAll(res._sort.column, res._sort.type, 'deleted', true);
             }
+
+            rows = await builder;
 
             if (!rows.length) {
                 return null;
             }
+
+            // console.log(res.limit, res.offset);
+            // const users = rows.splice(0, 5);
+            // users.push(rows.pop());
+
+            // console.log(users);
 
             return rows;
         } catch (error) {

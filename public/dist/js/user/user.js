@@ -8,11 +8,40 @@ const searchBtn = document.querySelector('#searchBtn');
 
 const userHandler = {
     renderUserTable: function(users) {
-        if (!users) {
+        if (!users.rows.length) {
+            userTable.innerHTML = `
+                <tr>
+                    <td colspan="8">
+                        There is no available user in database.
+                    </td>
+                </tr>
+            `;
             return;
         }
+        let paginationHtmls = [
+            `
+                <li class="paginate_button page-item previous">
+                    <a class="page-link" id="prevBtn" href="">Previous</a>
+                </li>
+            `,
+        ];
 
-        const htmls = users.map(user => {
+        for (let i = 1; i <= users.countItems / 5; i++) {
+            let li = `
+                <li class="paginate_button page-item">
+                    <a class="page-link page-element" href="" data-page="${i}" tabindex='0'>${i}</a>
+                </li>
+            `;
+            paginationHtmls.push(li);
+        }
+
+        paginationHtmls.push(`
+            <li class="paginate_button page-item next">
+                <a class="page-link" id="nextBtn" href="">Next</a>
+            </li>
+        `);
+
+        const tableHtmls = users.rows.map(user => {
             return `
                 <tr>
                     <td>
@@ -36,7 +65,8 @@ const userHandler = {
             `;
         });
 
-        userTable.innerHTML = htmls.join('');
+        document.querySelector('#paginationUl').innerHTML = paginationHtmls.join('');
+        userTable.innerHTML = tableHtmls.join('');
     },
     softDeleteOneById: async function(id) {
         const response = await fetch(`http://localhost:4000/api/v1/users/${id}`, { method: 'DELETE' });
@@ -192,6 +222,14 @@ const userHandler = {
                 _this.search(searchQuery.value);
             }
         }
+
+        // Pagination
+        document.querySelectorAll('.page-link').forEach(item => {
+            item.onclick = function(e) {
+                e.preventDefault();
+                console.log(item.dataset.dt);
+            }
+        })
     },
     start: function() {
         const _this = this;

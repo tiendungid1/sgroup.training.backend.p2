@@ -1,6 +1,6 @@
 import express from 'express';
 import { UsersController } from './users.controller';
-import { sortMiddleware, searchMiddleware } from './middlewares';
+import { sortMiddleware, searchMiddleware, paginationMiddleware } from './middlewares';
 
 const router = express.Router();
 
@@ -10,7 +10,7 @@ router.delete('/:id/force', UsersController.getSingleton().forceDeleteOneById);
 router.patch('/:id/restore', UsersController.getSingleton().restoreOneById);
 router.post('/handle-user-page-actions', UsersController.getSingleton().handleUserPageActions);
 router.post('/handle-trash-page-actions', UsersController.getSingleton().handleTrashPageActions);
-router.get('/get-deleted-users', sortMiddleware, searchMiddleware, UsersController.getSingleton().getAllDeletedUsers);
-router.get('/', sortMiddleware, searchMiddleware, UsersController.getSingleton().getAll);
+router.get('/get-deleted-users', paginationMiddleware, sortMiddleware, searchMiddleware, UsersController.getSingleton().getAllDeletedUsers);
+router.get('/', paginationMiddleware, sortMiddleware, searchMiddleware, UsersController.getSingleton().getAll);
 
 export const userRouter = router;
