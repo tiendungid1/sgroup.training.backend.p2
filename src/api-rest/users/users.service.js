@@ -51,15 +51,10 @@ export class UsersService {
 
     async getAll(res) {
         try {
-            if (res._sort.type === 'default') {
-                res._sort.column = 'users.id';
-                res._sort.type = 'asc';
-            }
-
             let obj;
 
-            if (res._search !== '') {
-                obj = await this.#userRepository.getAll(res._sort.column, res._sort.type, res.limit, res.offset, 'deleted', false, 'users.username', `%${res._search}%`);
+            if (res._search.enabled) {
+                obj = await this.#userRepository.getAll(res._sort.column, res._sort.type, res.limit, res.offset, 'deleted', false, 'users.username', `%${res._search.query}%`);
             } else {
                 obj = await this.#userRepository.getAll(res._sort.column, res._sort.type, res.limit, res.offset, 'deleted', false);
             }

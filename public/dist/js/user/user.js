@@ -7,8 +7,34 @@ const searchQuery = document.querySelector('#searchQuery');
 const searchBtn = document.querySelector('#searchBtn');
 
 const userHandler = {
+    renderPagination: function(items) {
+        let paginationHtmls = [
+            `
+                <li class="paginate_button page-item previous">
+                    <button class="page-link" id="prevBtn" href="">Previous</button>
+                </li>
+            `
+        ];
+
+        for (let i = 1; i <= items / 5; i++) {
+            let li = `
+                <li class="paginate_button page-item">
+                    <button class="page-link page-element" href="" data-page="${i}">${i}</button>
+                </li>
+            `;
+            paginationHtmls.push(li);
+        }
+
+        paginationHtmls.push(`
+            <li class="paginate_button page-item next">
+                <button class="page-link" id="nextBtn" href="">Next</button>
+            </li>
+        `);
+
+        document.querySelector('#paginationUl').innerHTML = paginationHtmls.join('');
+    },
     renderUserTable: function(users) {
-        if (!users.rows.length) {
+        if (!users.length) {
             userTable.innerHTML = `
                 <tr>
                     <td colspan="8">
@@ -18,30 +44,8 @@ const userHandler = {
             `;
             return;
         }
-        let paginationHtmls = [
-            `
-                <li class="paginate_button page-item previous">
-                    <a class="page-link" id="prevBtn" href="">Previous</a>
-                </li>
-            `,
-        ];
 
-        for (let i = 1; i <= users.countItems / 5; i++) {
-            let li = `
-                <li class="paginate_button page-item">
-                    <a class="page-link page-element" href="" data-page="${i}" tabindex='0'>${i}</a>
-                </li>
-            `;
-            paginationHtmls.push(li);
-        }
-
-        paginationHtmls.push(`
-            <li class="paginate_button page-item next">
-                <a class="page-link" id="nextBtn" href="">Next</a>
-            </li>
-        `);
-
-        const tableHtmls = users.rows.map(user => {
+        const tableHtmls = users.map(user => {
             return `
                 <tr>
                     <td>
@@ -65,7 +69,6 @@ const userHandler = {
             `;
         });
 
-        document.querySelector('#paginationUl').innerHTML = paginationHtmls.join('');
         userTable.innerHTML = tableHtmls.join('');
     },
     softDeleteOneById: async function(id) {
@@ -80,7 +83,8 @@ const userHandler = {
     getUsersWhenPageLoad: async function() {
         const response = await fetch(`http://localhost:4000/api/v1/users`, { method: 'GET' });
         const users = await response.json();
-        this.renderUserTable(users);
+        this.renderUserTable(users.rows);
+        this.renderPagination(users.countItems);
     },
     actionsHandler: async function() {
         const action = document.getElementById('selectAction').value;
@@ -112,12 +116,20 @@ const userHandler = {
     sort: async function(column, type) {
         const response = await fetch(`http://localhost:4000/api/v1/users?_sort&column=${column}&type=${type}`, { method: 'GET' });
         const users = await response.json();
-        this.renderUserTable(users);
+        this.renderUserTable(users.rows);
     },
     search: async function(query) {
         const response = await fetch(`http://localhost:4000/api/v1/users?_search=${query}`, { method: 'GET' });
         const users = await response.json();
-        this.renderUserTable(users);
+        this.renderUserTable(users.rows);
+    },
+    pagination: async function(page) {
+        const perPage = 5;
+        const offset = (parseInt(page, 10) - 1) * perPage;
+
+        const response = await fetch(`http://localhost:4000/api/v1/users?_pagination&limit=${perPage}&offset=${offset}`, { method: 'GET' });
+        const users = await response.json();
+        this.renderUserTable(users.rows);
     },
     renderCheckboxAllSubmitBtn: function() {
         const checkAllSubmitBtn = $('.check-all-submit-btn');
@@ -224,12 +236,11 @@ const userHandler = {
         }
 
         // Pagination
-        document.querySelectorAll('.page-link').forEach(item => {
-            item.onclick = function(e) {
-                e.preventDefault();
-                console.log(item.dataset.dt);
-            }
-        })
+        document.querySelectorAll('.page-element').forEach(item => {
+            item.addEventListener('click', () => {
+                _this.pagination(item.dataset.page);
+            });
+        });
     },
     start: function() {
         const _this = this;
