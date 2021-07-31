@@ -49,14 +49,14 @@ export class UsersService {
         }
     }
 
-    async getAll(res) {
+    async getAll(res, boolColumn, boolValue) {
         try {
             let obj;
 
             if (res._search.enabled) {
-                obj = await this.#userRepository.getAll(res._sort.column, res._sort.type, res.limit, res.offset, 'deleted', false, 'users.username', `%${res._search.query}%`);
+                obj = await this.#userRepository.getAll(res._sort.column, res._sort.type, res.limit, res.offset, boolColumn, boolValue, 'users.username', `%${res._search.query}%`);
             } else {
-                obj = await this.#userRepository.getAll(res._sort.column, res._sort.type, res.limit, res.offset, 'deleted', false);
+                obj = await this.#userRepository.getAll(res._sort.column, res._sort.type, res.limit, res.offset, boolColumn, boolValue);
             }
 
             if (!obj.rows.length) {
@@ -108,48 +108,6 @@ export class UsersService {
                 break;
             default:
                 throw new UnprocessEntityException(`Can not soft delete accounts`);
-        }
-    }
-
-    async getUsersInRecycleBin(res) {
-        try {
-            const builder = this.#userRepository.getAll()
-                .leftJoin('users_roles', 'users.id', 'users_roles.user_id')
-                .leftJoin('roles', 'users_roles.role_id', 'roles.id')
-                .where('deleted', '=', true);
-
-            if (res._sort.type === 'default') {
-                res._sort.column = 'users.id';
-                res._sort.type = 'asc';
-            }
-
-            let rows;
-
-            if (res._search !== '') {
-                builder
-                    .andWhere('users.username', 'like', `%${res._search}%`)
-                    .orderBy(res._sort.column, res._sort.type);
-                // rows = await this.#userRepository.getAll(res._sort.column, res._sort.type, 'deleted', true, 'users.username', `%${res._search}%`);
-            } else {
-                builder.orderBy(res._sort.column, res._sort.type);
-                // rows = await this.#userRepository.getAll(res._sort.column, res._sort.type, 'deleted', true);
-            }
-
-            rows = await builder;
-
-            if (!rows.length) {
-                return null;
-            }
-
-            // console.log(res.limit, res.offset);
-            // const users = rows.splice(0, 5);
-            // users.push(rows.pop());
-
-            // console.log(users);
-
-            return rows;
-        } catch (error) {
-            throw new Error(error);
         }
     }
 

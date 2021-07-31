@@ -1,4 +1,5 @@
 import { logger } from 'common/utils';
+import { UserStatus } from "common/enum";
 import { knexConnection } from 'database';
 
 export class UserRepository {
@@ -55,10 +56,11 @@ export class UserRepository {
     }
 
     async getAll(column, type, limit, offset, boolColumn, boolValue, searchColumn, searchValue) {
-        const countItems = await this.builder().count('users.id', {as: 'items'});
         const obj = {};
 
         if (searchValue) {
+            const countItems = await this.builder().count('users.id', {as: 'items'}).where(searchColumn, 'like', searchValue);
+
             const rows = await this.builder().select('*')
                 .leftJoin('users_roles', 'users.id', 'users_roles.user_id')
                 .leftJoin('roles', 'users_roles.role_id', 'roles.id')
@@ -75,6 +77,8 @@ export class UserRepository {
             return obj;
         }
 
+        const countItems = await this.builder().count('users.id', {as: 'items'});
+        
         const rows = await this.builder().select('*')
             .leftJoin('users_roles', 'users.id', 'users_roles.user_id')
             .leftJoin('roles', 'users_roles.role_id', 'roles.id')
@@ -94,6 +98,7 @@ export class UserRepository {
         return this.builder().where(fieldName, '=', value)
             .update({
                 deleted: true,
+                status: UserStatus.BANNED,
                 deleted_at: new Date()
             });
     }
@@ -102,6 +107,7 @@ export class UserRepository {
         return this.builder().whereIn('id', ids)
             .update({
                 deleted: true,
+                status: UserStatus.BANNED,
                 deleted_at: new Date()
             });
     }
@@ -110,6 +116,7 @@ export class UserRepository {
         return this.builder().where(fieldName, '=', value)
             .update({
                 deleted: false,
+                status: UserStatus.AVAILABLE,
                 deleted_at: null
             });
     }
@@ -122,6 +129,7 @@ export class UserRepository {
         return this.builder().whereIn('id', ids)
             .update({
                 deleted: false,
+                status: UserStatus.AVAILABLE,
                 deleted_at: null
             });
     }

@@ -28,7 +28,7 @@ export class UsersController {
 
     getAll = async (req, res) => {
         try {
-            const data = await this.#userService.getAll(res);
+            const data = await this.#userService.getAll(res, 'deleted', false);
             return res.status(OK).json(data);
         } catch (error) {
             return httpExceptionHandler(error)(res);
@@ -64,7 +64,7 @@ export class UsersController {
 
     getAllDeletedUsers = async (req, res) => {
         try {
-            const data = await this.#userService.getUsersInRecycleBin(res);
+            const data = await this.#userService.getAll(res, 'deleted', true);
             return res.status(OK).json(data);
         } catch (error) {
             return httpExceptionHandler(error)(res);

@@ -7,7 +7,11 @@ const searchQuery = document.querySelector('#searchQuery');
 const searchBtn = document.querySelector('#searchBtn');
 
 const userHandler = {
+    userPerPage: 5,
+    isSearching: false,
     renderPagination: function(items) {
+        const _this = this;
+
         let paginationHtmls = [
             `
                 <li class="paginate_button page-item previous">
@@ -16,7 +20,7 @@ const userHandler = {
             `
         ];
 
-        for (let i = 1; i <= items / 5; i++) {
+        for (let i = 1; i <= Math.ceil(items/5); i++) {
             let li = `
                 <li class="paginate_button page-item">
                     <button class="page-link page-element" href="" data-page="${i}">${i}</button>
@@ -32,12 +36,19 @@ const userHandler = {
         `);
 
         document.querySelector('#paginationUl').innerHTML = paginationHtmls.join('');
+
+        // Listen to event here
+        document.querySelectorAll('.page-element').forEach(item => {
+            item.addEventListener('click', () => {
+                _this.paginateWhileSearching(item.dataset.page);
+            });
+        });
     },
     renderUserTable: function(users) {
-        if (!users.length) {
+        if (!users) {
             userTable.innerHTML = `
                 <tr>
-                    <td colspan="8">
+                    <td colspan="8" class="text-center">
                         There is no available user in database.
                     </td>
                 </tr>
@@ -82,9 +93,20 @@ const userHandler = {
     },
     getUsersWhenPageLoad: async function() {
         const response = await fetch(`http://localhost:4000/api/v1/users`, { method: 'GET' });
-        const users = await response.json();
-        this.renderUserTable(users.rows);
-        this.renderPagination(users.countItems);
+
+        if (!response.ok) {
+            alert('Error');
+        } else {
+            const users = await response.json();
+
+            if (!users) {
+                this.renderUserTable(users);
+                return;
+            }
+
+            this.renderUserTable(users.rows);
+            this.renderPagination(users.countItems);
+        }
     },
     actionsHandler: async function() {
         const action = document.getElementById('selectAction').value;
@@ -113,23 +135,72 @@ const userHandler = {
             return location.reload();
         }
     },
-    sort: async function(column, type) {
-        const response = await fetch(`http://localhost:4000/api/v1/users?_sort&column=${column}&type=${type}`, { method: 'GET' });
-        const users = await response.json();
-        this.renderUserTable(users.rows);
+    sort: async function(url) {
+        const response = await fetch(url, { method: 'GET' });
+        
+        if (!response.ok) {
+            alert('Error');
+        } else {
+            const users = await response.json();
+
+            if (!users) {
+                this.renderUserTable(users);
+                return;
+            }
+
+            this.renderUserTable(users.rows);
+        }
+    },
+    sortWhileSearching: function(column, type) {
+        if (!this.isSearching) {
+            this.sort(`http://localhost:4000/api/v1/users?_sort&column=${column}&type=${type}`);
+            return;
+        }
+
+        this.sort(`http://localhost:4000/api/v1/users?_search=${searchQuery.value}&_sort&column=${column}&type=${type}`);
     },
     search: async function(query) {
         const response = await fetch(`http://localhost:4000/api/v1/users?_search=${query}`, { method: 'GET' });
-        const users = await response.json();
-        this.renderUserTable(users.rows);
-    },
-    pagination: async function(page) {
-        const perPage = 5;
-        const offset = (parseInt(page, 10) - 1) * perPage;
+        
+        if (!response.ok) {
+            alert('Error');
+        } else {
+            const users = await response.json();
 
-        const response = await fetch(`http://localhost:4000/api/v1/users?_pagination&limit=${perPage}&offset=${offset}`, { method: 'GET' });
-        const users = await response.json();
-        this.renderUserTable(users.rows);
+            if (!users) {
+                this.renderUserTable(users);
+                return;
+            }
+
+            this.renderUserTable(users.rows);
+            this.renderPagination(users.countItems);
+        }
+    },
+    paginate: async function(url) {
+        const response = await fetch(url, { method: 'GET' });
+        
+        if (!response.ok) {
+            alert('Error');
+        } else {
+            const users = await response.json();
+
+            if (!users) {
+                this.renderUserTable(users);
+                return;
+            }
+
+            this.renderUserTable(users.rows);
+        }
+    },
+    paginateWhileSearching: function(page) {
+        const offset = (parseInt(page, 10) - 1) * this.userPerPage;
+
+        if (!this.isSearching) {
+            this.paginate(`http://localhost:4000/api/v1/users?_pagination&limit=${this.userPerPage}&offset=${offset}`);
+            return;
+        }
+        
+        this.paginate(`http://localhost:4000/api/v1/users?_search=${searchQuery.value}&_pagination&limit=${this.userPerPage}&offset=${offset}`);
     },
     renderCheckboxAllSubmitBtn: function() {
         const checkAllSubmitBtn = $('.check-all-submit-btn');
@@ -206,41 +277,44 @@ const userHandler = {
 
         // Sort by id
         sortByIdDesc.onclick = function() {
-            _this.sort('users.id', 'desc');
+            _this.sortWhileSearching('users.id', 'desc');
         }
 
         sortByIdAsc.onclick = function() {
-            _this.sort('users.id', 'asc');
+            _this.sortWhileSearching('users.id', 'asc');
         }
         
         // Sort by username
         sortByUsernameDesc.onclick = function() {
-            _this.sort('users.username', 'desc');
+            _this.sortWhileSearching('users.username', 'desc');
         }
 
         sortByUsernameAsc.onclick = function() {
-            _this.sort('users.username', 'asc');
+            _this.sortWhileSearching('users.username', 'asc');
         }
 
         // Search
         window.onkeyup = function(e) {
-            if (e.key === 'Enter' && searchQuery.value !== '') {
-                _this.search(searchQuery.value);
+            if (e.key === 'Enter') {
+                if (searchQuery.value !== '') {
+                    _this.search(searchQuery.value);
+                    _this.isSearching = true;
+                } else {
+                    _this.getUsersWhenPageLoad();
+                    _this.isSearching = false;
+                }
             }
         }
 
         searchBtn.onclick = function() {
             if (searchQuery.value !== '') {
                 _this.search(searchQuery.value);
+                _this.isSearching = true;
+            } else {
+                _this.getUsersWhenPageLoad();
+                _this.isSearching = false;
             }
         }
-
-        // Pagination
-        document.querySelectorAll('.page-element').forEach(item => {
-            item.addEventListener('click', () => {
-                _this.pagination(item.dataset.page);
-            });
-        });
     },
     start: function() {
         const _this = this;
