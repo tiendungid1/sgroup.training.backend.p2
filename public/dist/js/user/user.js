@@ -9,8 +9,32 @@ const searchBtn = document.querySelector('#searchBtn');
 const userHandler = {
     userPerPage: 5,
     isSearching: false,
-    renderPagination: function(items) {
+    apiUrl: 'http://localhost:4000/api/v1/users',
+    getOption: { method: 'GET' },
+    postOption: function(jsonBody) {
+        return {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'credentials': 'include',
+                'Content-Type': 'application/json'
+            },
+            body: jsonBody
+        }
+    },
+    renderUserTable: function(users) {
         const _this = this;
+
+        if (!users) {
+            userTable.innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center">
+                        There is no available user in database.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
 
         let paginationHtmls = [
             `
@@ -20,7 +44,7 @@ const userHandler = {
             `
         ];
 
-        for (let i = 1; i <= Math.ceil(items/5); i++) {
+        for (let i = 1; i <= Math.ceil(users.countItems/5); i++) {
             let li = `
                 <li class="paginate_button page-item">
                     <button class="page-link page-element" href="" data-page="${i}">${i}</button>
@@ -35,28 +59,7 @@ const userHandler = {
             </li>
         `);
 
-        document.querySelector('#paginationUl').innerHTML = paginationHtmls.join('');
-
-        // Listen to event here
-        document.querySelectorAll('.page-element').forEach(item => {
-            item.addEventListener('click', () => {
-                _this.paginateWhileSearching(item.dataset.page);
-            });
-        });
-    },
-    renderUserTable: function(users) {
-        if (!users) {
-            userTable.innerHTML = `
-                <tr>
-                    <td colspan="8" class="text-center">
-                        There is no available user in database.
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        const tableHtmls = users.map(user => {
+        const tableHtmls = users.rows.map(user => {
             return `
                 <tr>
                     <td>
@@ -80,7 +83,16 @@ const userHandler = {
             `;
         });
 
+        // Append html
+        document.querySelector('#paginationUl').innerHTML = paginationHtmls.join('');
         userTable.innerHTML = tableHtmls.join('');
+
+        // Listen to event
+        document.querySelectorAll('.page-element').forEach(item => {
+            item.addEventListener('click', () => {
+                _this.paginate(item.dataset.page);
+            });
+        });
     },
     softDeleteOneById: async function(id) {
         const response = await fetch(`http://localhost:4000/api/v1/users/${id}`, { method: 'DELETE' });
@@ -91,22 +103,17 @@ const userHandler = {
             return location.reload();
         }
     },
-    getUsersWhenPageLoad: async function() {
-        const response = await fetch(`http://localhost:4000/api/v1/users`, { method: 'GET' });
-
+    handleResponseData: async function(response) {
         if (!response.ok) {
             alert('Error');
         } else {
             const users = await response.json();
-
-            if (!users) {
-                this.renderUserTable(users);
-                return;
-            }
-
-            this.renderUserTable(users.rows);
-            this.renderPagination(users.countItems);
+            this.renderUserTable(users);
         }
+    },
+    getUsersWhenPageLoad: async function() {
+        const response = await fetch(this.apiUrl, this.getOption);
+        this.handleResponseData(response);
     },
     actionsHandler: async function() {
         const action = document.getElementById('selectAction').value;
@@ -116,18 +123,12 @@ const userHandler = {
             userIds.push(item.value);
         });
 
-        const response = await fetch('http://localhost:4000/api/v1/users/handle-user-page-actions', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json, text/plain, */*',
-                'credentials': 'include',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                action,
-                userIds
-            }),
-        });
+        const option = this.postOption(JSON.stringify({
+            action,
+            userIds
+        }));
+
+        const response = await fetch(`${this.apiUrl}/handle-user-page-actions`, option);
 
         if (!response.ok) {
             alert('Error');
@@ -135,72 +136,31 @@ const userHandler = {
             return location.reload();
         }
     },
-    sort: async function(url) {
-        const response = await fetch(url, { method: 'GET' });
-        
-        if (!response.ok) {
-            alert('Error');
-        } else {
-            const users = await response.json();
-
-            if (!users) {
-                this.renderUserTable(users);
-                return;
-            }
-
-            this.renderUserTable(users.rows);
-        }
-    },
-    sortWhileSearching: function(column, type) {
+    sort: async function(column, type) {
         if (!this.isSearching) {
-            this.sort(`http://localhost:4000/api/v1/users?_sort&column=${column}&type=${type}`);
+            const response = await fetch(`${this.apiUrl}?_sort&column=${column}&type=${type}`, this.getOption);
+            this.handleResponseData(response);
             return;
         }
 
-        this.sort(`http://localhost:4000/api/v1/users?_search=${searchQuery.value}&_sort&column=${column}&type=${type}`);
+        const response = await fetch(`${this.apiUrl}?_search=${searchQuery.value}&_sort&column=${column}&type=${type}`, this.getOption);
+        this.handleResponseData(response);
     },
     search: async function(query) {
-        const response = await fetch(`http://localhost:4000/api/v1/users?_search=${query}`, { method: 'GET' });
-        
-        if (!response.ok) {
-            alert('Error');
-        } else {
-            const users = await response.json();
-
-            if (!users) {
-                this.renderUserTable(users);
-                return;
-            }
-
-            this.renderUserTable(users.rows);
-            this.renderPagination(users.countItems);
-        }
+        const response = await fetch(`${this.apiUrl}?_search=${query}`, this.getOption);
+        this.handleResponseData(response);
     },
-    paginate: async function(url) {
-        const response = await fetch(url, { method: 'GET' });
-        
-        if (!response.ok) {
-            alert('Error');
-        } else {
-            const users = await response.json();
-
-            if (!users) {
-                this.renderUserTable(users);
-                return;
-            }
-
-            this.renderUserTable(users.rows);
-        }
-    },
-    paginateWhileSearching: function(page) {
+    paginate: async function(page) {
         const offset = (parseInt(page, 10) - 1) * this.userPerPage;
-
+        
         if (!this.isSearching) {
-            this.paginate(`http://localhost:4000/api/v1/users?_pagination&limit=${this.userPerPage}&offset=${offset}`);
+            const response = await fetch(`${this.apiUrl}?_pagination&limit=${this.userPerPage}&offset=${offset}`, this.getOption);
+            this.handleResponseData(response);
             return;
         }
-        
-        this.paginate(`http://localhost:4000/api/v1/users?_search=${searchQuery.value}&_pagination&limit=${this.userPerPage}&offset=${offset}`);
+
+        const response = await fetch(`${this.apiUrl}?_search=${searchQuery.value}&_pagination&limit=${this.userPerPage}&offset=${offset}`, this.getOption);
+        this.handleResponseData(response);
     },
     renderCheckboxAllSubmitBtn: function() {
         const checkAllSubmitBtn = $('.check-all-submit-btn');
@@ -277,20 +237,20 @@ const userHandler = {
 
         // Sort by id
         sortByIdDesc.onclick = function() {
-            _this.sortWhileSearching('users.id', 'desc');
+            _this.sort('users.id', 'desc');
         }
 
         sortByIdAsc.onclick = function() {
-            _this.sortWhileSearching('users.id', 'asc');
+            _this.sort('users.id', 'asc');
         }
         
         // Sort by username
         sortByUsernameDesc.onclick = function() {
-            _this.sortWhileSearching('users.username', 'desc');
+            _this.sort('users.username', 'desc');
         }
 
         sortByUsernameAsc.onclick = function() {
-            _this.sortWhileSearching('users.username', 'asc');
+            _this.sort('users.username', 'asc');
         }
 
         // Search
@@ -303,16 +263,6 @@ const userHandler = {
                     _this.getUsersWhenPageLoad();
                     _this.isSearching = false;
                 }
-            }
-        }
-
-        searchBtn.onclick = function() {
-            if (searchQuery.value !== '') {
-                _this.search(searchQuery.value);
-                _this.isSearching = true;
-            } else {
-                _this.getUsersWhenPageLoad();
-                _this.isSearching = false;
             }
         }
     },
