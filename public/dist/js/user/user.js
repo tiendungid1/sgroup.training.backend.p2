@@ -22,6 +22,7 @@ const userHandler = {
             body: jsonBody
         }
     },
+    deleteOption: { method: 'DELETE' },
     renderUserTable: function(users) {
         const _this = this;
 
@@ -70,9 +71,6 @@ const userHandler = {
                     <td>${user.user_id}</td>
                     <td>${user.username}</td>
                     <td>${user.fullname}</td>
-                    <td>
-                        <img src="${user.avatar}" height="100px" width="100px">
-                    </td>
                     <td>${user.status}</td>
                     <td>${user.name}</td>
                     <td>
@@ -94,14 +92,9 @@ const userHandler = {
             });
         });
     },
-    softDeleteOneById: async function(id) {
-        const response = await fetch(`http://localhost:4000/api/v1/users/${id}`, { method: 'DELETE' });
-
-        if (!response.ok) {
-            alert('Error');
-        } else {
-            return location.reload();
-        }
+    getUsersWhenPageLoad: async function() {
+        const response = await fetch(this.apiUrl, this.getOption);
+        this.handleResponseData(response);
     },
     handleResponseData: async function(response) {
         if (!response.ok) {
@@ -111,11 +104,16 @@ const userHandler = {
             this.renderUserTable(users);
         }
     },
-    getUsersWhenPageLoad: async function() {
-        const response = await fetch(this.apiUrl, this.getOption);
-        this.handleResponseData(response);
+    softDeleteOneById: async function(id) {
+        const response = await fetch(`${this.apiUrl}/${id}`, this.deleteOption);
+
+        if (!response.ok) {
+            alert('Error');
+        } else {
+            return location.reload();
+        }
     },
-    actionsHandler: async function() {
+    selectCheckBoxActionHandler: async function() {
         const action = document.getElementById('selectAction').value;
         const userIds = [];
 
@@ -220,7 +218,7 @@ const userHandler = {
         userItemCheckbox.forEach(item => {
             item.onchange = function() {
                 item.classList.toggle('isChecked');
-                
+
                 if (userItemCheckbox.length === document.querySelectorAll('.isChecked').length) {
                     checkboxAll.checked = true;
                 } else {
@@ -232,7 +230,7 @@ const userHandler = {
         });
 
         document.querySelector('.check-all-submit-btn').onclick = function() {
-            _this.actionsHandler();
+            _this.selectCheckBoxActionHandler();
         };
 
         // Sort by id

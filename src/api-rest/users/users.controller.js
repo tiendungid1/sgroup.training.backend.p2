@@ -28,7 +28,7 @@ export class UsersController {
 
     getAll = async (req, res) => {
         try {
-            const data = await this.#userService.getAll(res, 'deleted', false);
+            const data = await this.#userService.getAll(res, res._site.column, res._site.value);
             return res.status(OK).json(data);
         } catch (error) {
             return httpExceptionHandler(error)(res);
@@ -57,15 +57,6 @@ export class UsersController {
         try {
             await this.#userService.softDeleteManyUsers(req.body);
             return res.status(OK).json({ message: 'OK' });
-        } catch (error) {
-            return httpExceptionHandler(error)(res);
-        }
-    }
-
-    getAllDeletedUsers = async (req, res) => {
-        try {
-            const data = await this.#userService.getAll(res, 'deleted', true);
-            return res.status(OK).json(data);
         } catch (error) {
             return httpExceptionHandler(error)(res);
         }

@@ -34,24 +34,30 @@ block content
 									button.btn.btn-primary.btn-sm.check-all-submit-btn(disabled='true') Submit
 								.input-group
 									input#searchQuery.form-control.form-control-sm(type='search' placeholder='Search username')
-									.input-group-append
-										button#searchBtn.btn.btn-sm.btn-default(type='button')
-											i.fa.fa-search
 							// /.card-header
 							.card-body
 								table.table.table-bordered.table-hover
 									thead
 										tr
 											th #
-											th Id
-											th Username
+											th.column-id
+												| ID
+												span#sortByIdDesc.oi.oi-sort-descending
+												span#sortByIdAsc.oi.oi-sort-ascending
+											th.column-username
+												| Username
+												span#sortByUsernameDesc.oi.oi-sort-descending
+												span#sortByUsernameAsc.oi.oi-sort-ascending
 											th Fullname
-											th Avatar
 											th Status
 											th Roles
 											th Action
 									tbody#user-table
 							// /.card-body
+				.row
+					.col-sm-12.col-md-7
+						#paginationDiv
+							ul#paginationUl.pagination
 					// /.col
 				// /.row
 			// /.container-fluid

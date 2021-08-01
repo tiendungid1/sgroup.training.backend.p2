@@ -59,7 +59,9 @@ export class UserRepository {
         const obj = {};
 
         if (searchValue) {
-            const countItems = await this.builder().count('users.id', {as: 'items'}).where(searchColumn, 'like', searchValue);
+            const countItems = await this.builder().count('users.id', {as: 'items'})
+                .where(boolColumn, '=', boolValue)
+                .andWhere(searchColumn, 'like', searchValue);
 
             const rows = await this.builder().select('*')
                 .leftJoin('users_roles', 'users.id', 'users_roles.user_id')
@@ -77,7 +79,7 @@ export class UserRepository {
             return obj;
         }
 
-        const countItems = await this.builder().count('users.id', {as: 'items'});
+        const countItems = await this.builder().count('users.id', {as: 'items'}).where(boolColumn, '=', boolValue);
         
         const rows = await this.builder().select('*')
             .leftJoin('users_roles', 'users.id', 'users_roles.user_id')
