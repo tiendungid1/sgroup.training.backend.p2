@@ -15,7 +15,7 @@
     "migrate:rollback": "yarn knex migrate:rollback",
     "migrate:reset": "yarn run migrate:rollback && yarn run migrate:latest && yarn run seed:run",
     "seed:run": "yarn knex seed:run",
-    "heroku-postbuild": "yarn migrate:reset && yarn run build",
+    "heroku-postbuild": "yarn install --production=false && yarn migrate:reset && yarn run build && yarn install --production",
     "knex": "babel-node node_modules/knex/bin/cli.js"
   },
   "repository": {
