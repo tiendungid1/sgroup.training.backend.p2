@@ -8,7 +8,7 @@ router.get('/:id/edit', async (req, res) => {
         const user = await UsersService.getSingleton().getOneForEdit(req.params.id);
         return res.render('pages/user/edit-user.pug', { user });
     } catch (error) {
-        console.log(error);        
+        console.log(error);
     }
 });
 router.get('/trash', (req, res) => res.render('pages/user/trash.pug'));

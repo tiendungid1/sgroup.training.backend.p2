@@ -7,7 +7,7 @@ export function loginValidator(req, res, next) {
         email: joi.string()
             .email({
                 minDomainSegments: 2,
-                tlds: {allow: ['com']}
+                tlds: { allow: ['com'] }
             })
             .required(),
         password: joi.string().min(6).required()

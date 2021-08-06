@@ -1,5 +1,5 @@
 import { logger } from 'common/utils';
-import { UserStatus } from "common/enum";
+import { UserStatus } from 'common/enum';
 import { knexConnection } from 'database';
 
 export class UserRepository {
@@ -50,7 +50,7 @@ export class UserRepository {
                 email: body.email
             });
     }
-    
+
     createOne(data) {
         return this.builder().insert(data);
     }
@@ -59,7 +59,7 @@ export class UserRepository {
         const obj = {};
 
         if (searchValue) {
-            const countItems = await this.builder().count('users.id', {as: 'items'})
+            const countItems = await this.builder().count('users.id', { as: 'items' })
                 .where(boolColumn, '=', boolValue)
                 .andWhere(searchColumn, 'like', searchValue);
 
@@ -69,28 +69,30 @@ export class UserRepository {
                 .where(boolColumn, '=', boolValue)
                 .andWhere(searchColumn, 'like', searchValue)
                 .orderBy(column, type)
-                .limit(limit).offset(offset);
+                .limit(limit)
+                .offset(offset);
 
             Object.assign(obj, {
                 countItems: countItems[0].items,
-                rows: rows
+                rows
             });
 
             return obj;
         }
 
-        const countItems = await this.builder().count('users.id', {as: 'items'}).where(boolColumn, '=', boolValue);
-        
+        const countItems = await this.builder().count('users.id', { as: 'items' }).where(boolColumn, '=', boolValue);
+
         const rows = await this.builder().select('*')
             .leftJoin('users_roles', 'users.id', 'users_roles.user_id')
             .leftJoin('roles', 'users_roles.role_id', 'roles.id')
             .where(boolColumn, '=', boolValue)
             .orderBy(column, type)
-            .limit(limit).offset(offset);
+            .limit(limit)
+            .offset(offset);
 
         Object.assign(obj, {
             countItems: countItems[0].items,
-            rows: rows
+            rows
         });
 
         return obj;

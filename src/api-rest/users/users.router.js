@@ -1,6 +1,8 @@
 import express from 'express';
 import { UsersController } from './users.controller';
-import { sortMiddleware, searchMiddleware, paginationMiddleware, siteMiddleware } from './middlewares';
+import {
+    sortMiddleware, searchMiddleware, paginationMiddleware, siteMiddleware
+} from './middlewares';
 
 const router = express.Router();
 

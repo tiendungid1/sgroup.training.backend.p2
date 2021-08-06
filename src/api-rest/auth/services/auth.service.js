@@ -62,7 +62,5 @@ export class AuthService {
         body.password = this.#bcryptService.hash(body.password);
 
         await this.#userService.createOneAndReturn(body);
-
-        return;
     }
 }

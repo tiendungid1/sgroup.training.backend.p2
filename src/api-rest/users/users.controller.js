@@ -1,7 +1,7 @@
 import { logger } from 'common/utils';
 import { httpExceptionHandler } from 'libs/http-exception/handler/exception.handler';
-import { UsersService } from './users.service';
 import { OK } from 'http-status';
+import { UsersService } from './users.service';
 
 export class UsersController {
     /**
@@ -79,7 +79,7 @@ export class UsersController {
             return httpExceptionHandler(error)(res);
         }
     }
-    
+
     handleTrashPageActions = async (req, res) => {
         try {
             await this.#userService.handleTrashPageActions(req.body);

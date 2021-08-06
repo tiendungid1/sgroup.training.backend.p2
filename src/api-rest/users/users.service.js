@@ -1,5 +1,7 @@
 import { logger } from 'common/utils';
-import { DuplicateException, UnAuthorizedException, NotFoundException, UnprocessEntityException } from 'libs/http-exception/exceptions';
+import {
+    DuplicateException, UnAuthorizedException, NotFoundException, UnprocessEntityException
+} from 'libs/http-exception/exceptions';
 import { UserRepository } from './user.repository';
 
 export class UsersService {
@@ -28,7 +30,7 @@ export class UsersService {
     async findOneAndReturn(email) {
         try {
             const row = await this.#userRepository.findOne('email', email);
-            
+
             if (!row.length) {
                 return null;
             }
@@ -72,7 +74,7 @@ export class UsersService {
     async getOneForEdit(id) {
         try {
             const row = await this.#userRepository.getOneForEdit('id', id);
-            
+
             if (!row.length) {
                 return null;
             }
@@ -81,7 +83,7 @@ export class UsersService {
 
             return user;
         } catch (error) {
-            throw new NotFoundException(`Can not get account's info`);
+            throw new NotFoundException('Can not get account\'s info');
         }
     }
 
@@ -89,7 +91,7 @@ export class UsersService {
         try {
             await this.#userRepository.updateOne(body);
         } catch (error) {
-            throw new UnprocessEntityException(`Can not update account`);
+            throw new UnprocessEntityException('Can not update account');
         }
     }
 
@@ -97,17 +99,17 @@ export class UsersService {
         try {
             await this.#userRepository.softDeleteOne('id', id);
         } catch (error) {
-            throw new UnprocessEntityException(`Can not soft delete account`);
+            throw new UnprocessEntityException('Can not soft delete account');
         }
     }
 
     async softDeleteManyUsers(body) {
         switch (body.action) {
-            case 'delete':
-                await this.#userRepository.softDeleteMany(body.userIds);
-                break;
-            default:
-                throw new UnprocessEntityException(`Can not soft delete accounts`);
+        case 'delete':
+            await this.#userRepository.softDeleteMany(body.userIds);
+            break;
+        default:
+            throw new UnprocessEntityException('Can not soft delete accounts');
         }
     }
 
@@ -115,7 +117,7 @@ export class UsersService {
         try {
             await this.#userRepository.restoreOne('id', id);
         } catch (error) {
-            throw new UnprocessEntityException(`Can not restore account`);
+            throw new UnprocessEntityException('Can not restore account');
         }
     }
 
@@ -123,20 +125,20 @@ export class UsersService {
         try {
             await this.#userRepository.forceDeleteOne('id', id);
         } catch (error) {
-            throw new UnprocessEntityException(`Can not soft delete account`);
+            throw new UnprocessEntityException('Can not soft delete account');
         }
     }
 
     async handleTrashPageActions(body) {
         switch (body.action) {
-            case 'restore':
-                await this.#userRepository.restoreMany(body.userIds);
-                break;
-            case 'delete':
-                await this.#userRepository.forceDeleteMany(body.userIds);
-                break;
-            default:
-                throw new UnprocessEntityException(`Can not handle actions`);
+        case 'restore':
+            await this.#userRepository.restoreMany(body.userIds);
+            break;
+        case 'delete':
+            await this.#userRepository.forceDeleteMany(body.userIds);
+            break;
+        default:
+            throw new UnprocessEntityException('Can not handle actions');
         }
     }
 }

@@ -1,6 +1,6 @@
 // @ts-check
 
-import { UserStatus } from "common/enum";
+import { UserStatus } from 'common/enum';
 
 /**
  * @param {import("knex")} knex
