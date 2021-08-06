@@ -11,7 +11,7 @@ module.exports = {
         seeds: {
             directory: `${process.cwd()}/src/database/seeds`,
             tableName: 'seeds',
-        },
+        }
     },
     production: {
         client: process.env.DATABASE_TYPE,
@@ -27,6 +27,6 @@ module.exports = {
         pool: {
             min: 2,
             max: 10
-        },
+        }
     }
 };
