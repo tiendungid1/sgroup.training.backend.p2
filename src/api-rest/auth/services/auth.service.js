@@ -60,7 +60,7 @@ export class AuthService {
 
     async register(body) {
         body.password = this.#bcryptService.hash(body.password);
-
+        
         await this.#userService.createOneAndReturn(body);
     }
 }

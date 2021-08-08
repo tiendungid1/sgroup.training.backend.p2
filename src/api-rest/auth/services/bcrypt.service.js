@@ -40,7 +40,7 @@ export class BcryptService {
      * @param {string} str to be hashed
      */
     hash(str) {
-        const salt = genSaltSync(this.saltRounds);
+        const salt = genSaltSync(10);
         return hashSync(str, salt);
     }
 }
