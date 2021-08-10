@@ -46,7 +46,7 @@ export class AuthService {
     }
 
     async login(body) {
-        const user = await this.#userService.findOneAndReturn(body.email);
+        const user = await this.#userService.findOneForLogin(body.email);
 
         if (!this.#bcryptService.compare(body.password, user.password)) {
             throw new UnAuthorizedException('Invalid password');
@@ -61,6 +61,6 @@ export class AuthService {
     async register(body) {
         body.password = this.#bcryptService.hash(body.password);
         
-        await this.#userService.createOneAndReturn(body);
+        await this.#userService.createNewUser(body);
     }
 }

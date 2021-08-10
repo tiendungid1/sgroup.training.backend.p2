@@ -7,12 +7,12 @@ block content
 			.container-fluid
 				.row.mb-2
 					.col-sm-6
-						h1 User Management
+						h1 Blog Management
 					.col-sm-6
 						ol.breadcrumb.float-sm-right
 							li.breadcrumb-item
 								a(href='#') Home
-							li.breadcrumb-item.active User
+							li.breadcrumb-item.active Blog		
 			// /.container-fluid
 		// Main content
 		section.content
@@ -21,7 +21,7 @@ block content
 					.col-12
 						.card
 							.card-header
-								h3.card-title User in system
+								h3.card-title Blog in system
 							.card-action
 								.select-action-form
 									.form-check
@@ -73,6 +73,3 @@ block content
 					.modal-footer
 						button#btn-delete-user.btn.btn-danger(type='button') Yeah, do it.
 						button.btn.btn-secondary(type='button' data-dismiss='modal') No, thanks.
-
-block scripts
-	script(src='/dist/js/user/user.js')

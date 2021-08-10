@@ -2,7 +2,7 @@ doctype html
 head
   meta(charset='utf-8')
   meta(name='viewport' content='width=device-width, initial-scale=1')
-  title AdminLTE 3 | Log in
+  title Log in Page
   // Google Font: Source Sans Pro
   link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback')
   // Font Awesome
@@ -14,10 +14,8 @@ head
 body.hold-transition.login-page
   .login-box
     .login-logo
-      a(href='#')
-        b Admin
-        | LTE
-    // /.login-logo
+      a(href='/public-blog')
+        b Check out blog page
     .card
       .card-body.login-card-body
         p.login-box-msg Sign in to start your session
@@ -54,7 +52,7 @@ body.hold-transition.login-page
         p.mb-1
           a(href='forgot-password.html') I forgot my password
         p.mb-0
-          a.text-center(href='register.html') Register a new membership
+          a.text-center(href='/register') Register a new membership
       // /.login-card-body
   // /.login-box
 // Middlewares

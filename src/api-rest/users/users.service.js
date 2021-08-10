@@ -27,7 +27,7 @@ export class UsersService {
         this.#userRepository = userRepository;
     }
 
-    async findOneAndReturn(email) {
+    async findOneForLogin(email) {
         try {
             const row = await this.#userRepository.findOne('email', email);
 
@@ -43,7 +43,7 @@ export class UsersService {
         }
     }
 
-    async createOneAndReturn(data) {
+    async createNewUser(data) {
         try {
             await this.#userRepository.createOne(data);
         } catch (error) {

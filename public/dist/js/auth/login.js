@@ -34,6 +34,6 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 
         localStorage.setItem('user', JSON.stringify(result));
         
-        location.href = "/";
+        location.href = "/home";
     }
 })
