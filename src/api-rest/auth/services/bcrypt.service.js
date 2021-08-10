@@ -12,7 +12,7 @@ export class BcryptService {
     static getSingleton() {
         if (!BcryptService.#instance) {
             BcryptService.#instance = new BcryptService(
-                ConfigService.getSingleton().get('SALT_ROUNDS')
+                Number.parseInt(ConfigService.getSingleton().get('SALT_ROUNDS'), 10)
             );
             logger.info(`[${BcryptService.name}] is bundling`);
         }
@@ -40,7 +40,7 @@ export class BcryptService {
      * @param {string} str to be hashed
      */
     hash(str) {
-        const salt = genSaltSync(10);
+        const salt = genSaltSync(this.saltRounds);
         return hashSync(str, salt);
     }
 }
