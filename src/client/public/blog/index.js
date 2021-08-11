@@ -2,6 +2,7 @@ import express from 'express';
 
 const router = express.Router();
 
-router.get('/', (req, res) => res.render('pages/blog'));
+router.get('/demo-post', (req, res) => res.render('pages/public/blog/post/demo'));
+router.get('/', (req, res) => res.render('pages/public/blog/blog'));
 
 export const publicBlogRouter = router;

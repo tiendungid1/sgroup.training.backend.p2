@@ -6,9 +6,9 @@ head
   meta(http-equiv='X-UA-Compatible' content='IE=edge')
   meta(name='viewport' content='width=device-width, initial-scale=1.0')
   // FontAwesome JS
-  script(defer='' src='assets/fontawesome/js/all.min.js')
+  script(defer='' src='/assets/fontawesome/js/all.min.js')
   // Theme CSS
-  link#theme-style(rel='stylesheet' href='assets/css/theme-5.css')
+  link#theme-style(rel='stylesheet' href='/assets/css/theme-5.css')
 header.header.text-center
   h1.blog-name.pt-lg-4.mb-0
     a.no-text-decoration(href='index.html') Anthony&apos;s Blog
@@ -17,7 +17,7 @@ header.header.text-center
       span.navbar-toggler-icon
     #navigation.collapse.navbar-collapse.flex-column
       .profile-section.pt-3.pt-lg-0
-        img.profile-image.mb-3.rounded-circle.mx-auto(src='assets/images/profile.png' alt='image')
+        img.profile-image.mb-3.rounded-circle.mx-auto(src='/assets/images/profile.png' alt='image')
         .bio.mb-3
           | Hi, my name is Anthony Doe. Briefly introduce yourself here. You can also provide a link to the about page.
           br
@@ -59,20 +59,6 @@ header.header.text-center
       .my-2.my-md-3
         a.btn.btn-primary(href='/login') Go to login page
 .main-wrapper
-  section.cta-section.theme-bg-light.py-5
-    .container.text-center.single-col-max-width
-      h2.heading DevBlog - A Blog Template Made For Developers
-      .intro Welcome to my blog. Subscribe and get my latest blog post in your inbox.
-      .single-form-max-width.pt-3.mx-auto
-        form.signup-form.row.g-2.g-lg-2.align-items-center
-          .col-12.col-md-9
-            label.sr-only(for='semail') Your email
-            input#semail.form-control.me-md-1.semail(type='email' name='semail1' placeholder='Enter email')
-          .col-12.col-md-2
-            button.btn.btn-primary(type='submit') Subscribe
-        // //signup-form
-      // //single-form-max-width
-    // //container
   block content
   footer.footer.text-center.py-2.theme-bg-dark
     // /* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */
@@ -84,5 +70,5 @@ header.header.text-center
       |  for developers
 // //main-wrapper
 // Javascript
-script(src='assets/plugins/popper.min.js')
-script(src='assets/plugins/bootstrap/js/bootstrap.min.js')
+script(src='/assets/plugins/popper.min.js')
+script(src='/assets/plugins/bootstrap/js/bootstrap.min.js')

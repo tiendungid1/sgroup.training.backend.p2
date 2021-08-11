@@ -1,3 +1,3 @@
 if (localStorage.getItem('user')) {
-    location.href = '/'
+    location.href = '/home';
 }

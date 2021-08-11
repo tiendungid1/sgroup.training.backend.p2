@@ -1,4 +1,4 @@
-extends ../../layout/private/user.layout.pug
+extends ../../../layout/private/table.layout.pug
 
 block content
 	.content-wrapper
@@ -7,12 +7,12 @@ block content
 			.container-fluid
 				.row.mb-2
 					.col-sm-6
-						h1 Recycle bin
+						h1 User Management
 					.col-sm-6
 						ol.breadcrumb.float-sm-right
 							li.breadcrumb-item
 								a(href='#') Home
-							li.breadcrumb-item.active Recycle bin			
+							li.breadcrumb-item.active User
 			// /.container-fluid
 		// Main content
 		section.content
@@ -21,7 +21,7 @@ block content
 					.col-12
 						.card
 							.card-header
-								h3.card-title Deleted Users in system
+								h3.card-title User in system
 							.card-action
 								.select-action-form
 									.form-check
@@ -29,7 +29,6 @@ block content
 										label.form-check-label(for='checkboxAll') Select all
 									select#selectAction.form-control.form-control-sm.checkbox-select-all-options(name='action')
 										option(value='') -- Select action --
-										option(value='restore') Restore
 										option(value='delete') Delete
 									button.btn.btn-primary.btn-sm.check-all-submit-btn(disabled='true') Submit
 								.input-group
@@ -70,10 +69,10 @@ block content
 						button.close(type='button' data-dismiss='modal' aria-label='Close')
 							span(aria-hidden='true') &times;
 					.modal-body
-						p Are you sure you want to permanently delete this user?
+						p Are you sure you want to delete this user?
 					.modal-footer
 						button#btn-delete-user.btn.btn-danger(type='button') Yeah, do it.
 						button.btn.btn-secondary(type='button' data-dismiss='modal') No, thanks.
 
 block scripts
-	script(src='/dist/js/user/trash.js')
+	script(src='/dist/js/user/user.js')
