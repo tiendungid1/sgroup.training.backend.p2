@@ -4,8 +4,10 @@ import methodOverride from 'method-override';
 import cors from 'cors';
 import { join } from 'path';
 import { clientRouter } from 'client';
+import swaggerUi from 'swagger-ui-express';
 import { apiRouter } from '../api-rest';
 import { authenDatabaseConnection } from '../database';
+import swaggerDocument from './document.json';
 
 export class EngineConfig {
     static ROOT_DIR = process.cwd();
@@ -61,6 +63,7 @@ export class EngineConfig {
 
         this.app.use('/api', apiRouter);
         this.app.use('/', clientRouter);
+        this.app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
         this.app.use((req, res) => res.render('pages/public/error', {
             message: `Page ${req.url} not found`
         }));

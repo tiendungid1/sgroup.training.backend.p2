@@ -17,7 +17,7 @@ export class UserRepository {
     }
 
     /**
-     * @type {import('knex').QueryInterface}
+     * @type {import('knex').QueryBuilder}
      */
     connection;
 
@@ -56,6 +56,14 @@ export class UserRepository {
     }
 
     async getAll(column, type, limit, offset, boolColumn, boolValue, searchColumn, searchValue) {
+        /**
+         * Pagination:
+         * - Must limit user first before join with others table
+         * - If limit later, the limit results will be after the processing, it not true
+         * 
+         * So, instead of select * from users left join ...
+         * -> select * from (select * from users limit ... offset ...) as users
+         */
         const obj = {};
 
         if (searchValue) {
