@@ -10,7 +10,12 @@ const userHandler = {
     userPerPage: 5,
     isSearching: false,
     apiUrl: 'http://localhost:4000/api/v1/users',
-    getOption: { method: 'GET' },
+    getOption: {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + (JSON.parse(localStorage.getItem('user'))).accessToken
+        }
+    },
     postOption: function(jsonBody) {
         return {
             method: 'POST',

@@ -4,7 +4,7 @@ export function siteMiddleware(req, res, next) {
         value: false
     };
 
-    if (req.query.hasOwnProperty('_trash')) {
+    if (Object.prototype.hasOwnProperty.call(req.query, '_trash')) {
         Object.assign(res._site, {
             column: 'deleted',
             value: true

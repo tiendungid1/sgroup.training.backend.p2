@@ -4,7 +4,7 @@ export function sortMiddleware(req, res, next) {
         type: 'asc'
     };
 
-    if (req.query.hasOwnProperty('_sort')) {
+    if (Object.prototype.hasOwnProperty.call(req.query, '_sort')) {
         Object.assign(res._sort, {
             column: req.query.column,
             type: req.query.type

@@ -3,7 +3,7 @@ export function searchMiddleware(req, res, next) {
         enabled: false
     };
 
-    if (req.query.hasOwnProperty('_search')) {
+    if (Object.prototype.hasOwnProperty.call(req.query, '_search')) {
         Object.assign(res._search, {
             enabled: true,
             query: req.query._search

@@ -7,6 +7,7 @@ import { clientRouter } from 'client';
 import swaggerUi from 'swagger-ui-express';
 import { apiRouter } from '../api-rest';
 import { authenDatabaseConnection } from '../database';
+// @ts-ignore
 import swaggerDocument from './document.json';
 
 export class EngineConfig {
